@@ -1,0 +1,30 @@
+import React from "react";
+
+import ThreadItem from './ThreadItem';
+
+import './ListingsList.css';
+
+const PostsList = props => {
+    if (props.items.length === 0) {
+        return (
+            <div className="center">
+                <h2>No posts found.</h2>
+            </div>
+        );
+    }
+
+    return <ul className="posts-list">
+        {props.items.map(post =>
+            <ListingItem
+                key={post.topic_id}
+                id={post.id}
+                created_by={post.created_by}
+                body={post.body}
+                likes={post.likes}
+                updated={post.updated}
+            />
+        )}
+    </ul>
+};
+
+export default PostsList;

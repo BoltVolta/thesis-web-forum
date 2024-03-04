@@ -3,15 +3,36 @@ const posts = require('../models/posts');
 
 // async method that uses the functions in the model.
 const getPosts = async (req, res) => {
-  const response = await posts.findAll();
-  if (response) {
-    res.send(response);
+  try {
+    const response = await posts.findAll();
+    if (response) {
+      res.send(response);
+    }
+  } catch (err) {
+    res.status(500).send({ message: "Something went wrong" });
   }
 };
 const getPostsById = async (req, res) => {
-  const response = await posts.findById();
-  if (response) {
-    res.send(response);
+  try {
+    const id = parseInt(req.params.id);
+    const response = await posts.findById(id);
+    if (response) {
+      res.send(response);
+    }
+  } catch (err) {
+    res.status(500).send({ message: "Something went wrong" });
+  }
+};
+
+const getPostsByTopicId = async (req, res) => {
+  try {
+    const topic_id = parseInt(req.params.id);
+    const response = await posts.findByTopicId(topic_id);
+    if (response) {
+      res.send(response);
+    }
+  } catch (err) {
+    res.status(500).send({ message: "Something went wrong" });
   }
 };
 
@@ -78,6 +99,19 @@ const updateLikes = async (req, res) => {
   }
 }
 
+const deletePostByTopicId = async (req, res) => {
+  try {
+    const topic_id = parseInt(req.params.topic_id);
+    const response = await posts.deleteByTopicId(topic_id);
+    if (response) {
+      res.send(response[0]);
+    }
+  } catch (err) {
+    res.status(500).send({ message: "Something went wrong" });
+  }
+};
+
+
 // export named functions
 module.exports = {
   getPosts,
@@ -85,5 +119,7 @@ module.exports = {
   createPost,
   deletePostById,
   updateLikes,
-  editPost
+  editPost,
+  deletePostByTopicId,
+  getPostsByTopicId
 };

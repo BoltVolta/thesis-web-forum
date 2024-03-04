@@ -30,6 +30,21 @@ const posts = {
       });
     });
   }),
+  findByTopicId: (topic_id) => new Promise((resolve, reject) => {
+    pool.getConnection((err, connection) => {
+      if (err)
+        return reject(err);
+
+      const selectQuery = 'SELECT * FROM posts WHERE topic_id=?';
+      connection.query(selectQuery, topic_id, (err, result) => {
+        connection.release();
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
+    });
+  }),
   save: (post) => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err)
@@ -68,6 +83,21 @@ const posts = {
         return reject(err);
 
       const deleteQuery = 'DELETE FROM posts WHERE id=?';
+      connection.query(deleteQuery, id, (err, result) => {
+        connection.release();
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
+    });
+  }),
+  deleteByTopicId: (id) => new Promise((resolve, reject) => {
+    pool.getConnection((err, connection) => {
+      if (err)
+        return reject(err);
+
+      const deleteQuery = 'DELETE FROM posts WHERE topic_id=?';
       connection.query(deleteQuery, id, (err, result) => {
         connection.release();
         if (err) {

@@ -2,7 +2,9 @@ import { useState, useCallback, useEffect } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { AuthContext } from './shared/context/auth-context';
-
+import Threads from './threads/pages/Threads';
+import Authenticate from './users/pages/Authenticate';
+import MainNavigation from './shared/components/navigation/MainNavigation';
 import './App.css';
 
 const queryClient = new QueryClient();
@@ -59,31 +61,31 @@ function App() {
 	if (token) {
 		routes = (
 			<Switch>
-				<Route path="/" exact>
-					<Home />
+				<Route path="/topics" exact>
+					<Topics />
 				</Route>
-				<Route path="/threads" exact>
-					<UserListings />
+				<Route path="/topics/:id" exact>
+					<Threads />
 				</Route>
 				<Route path="/users" exact>
 					<Users />
 				</Route>
-				<Route path="/threads/new" exact>
-					<AddThread />
-				</Route>
-				<Redirect to="/" />
+				<Redirect to="/topics" />
 			</Switch>
 		);
 	} else {
 		routes = (
 			<Switch>
-				<Route path="/" exact>
-					<Home />
+				<Route path="/topics" exact>
+					<Topics />
+				</Route>
+				<Route path="/topics/:id" exact>
+					<Threads />
 				</Route>
 				<Route path="/auth">
 					<Authenticate />
 				</Route>
-				<Redirect to="/" />
+				<Redirect to="/topics" />
 			</Switch>
 		);
 	}

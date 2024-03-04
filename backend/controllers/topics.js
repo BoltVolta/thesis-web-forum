@@ -16,15 +16,14 @@ const getTopicsById = async (req, res) => {
 };
 
 const createTopic = async (req, res) => {
-    const post = {
-        id: req.body.id,
+    const topic = {
         name: req.body.name
     }
 
     try {
-        const response = await topics.save(post);
+        const response = await topics.save(topic);
         if (response) {
-            post.id = response.insertId;
+            topic.id = response.insertId;
             res.status(201).send(post);
         }
     } catch (err) {

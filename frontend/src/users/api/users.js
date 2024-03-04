@@ -1,6 +1,6 @@
 export const getUsers = async () => {
     const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/users/`
+        `https://localhost:5000/api/users/`
     );
     return await res.json();
 }
@@ -10,7 +10,7 @@ export const getUserEmail = async ({ queryKey }) => {
     console.log("api call")
     console.log(userInfo);
     const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/users/${userInfo.id}`,
+        `https://localhost:5000/api/users/${userInfo.id}`,
     );
     //var log = console.log(await res.json());
     return await res.json();
@@ -18,7 +18,7 @@ export const getUserEmail = async ({ queryKey }) => {
 
 export const signUpUser = async ({ name, email, password }) => {
     const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/users/signup`,
+        `https://localhost:5000/api/users/signup`,
         {
             method: 'POST',
             headers: {
@@ -38,7 +38,7 @@ export const signUpUser = async ({ name, email, password }) => {
 
 export const loginUser = async ({ email, password }) => {
     const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/users/login`,
+        `https://localhost:5000/api/users/login`,
         {
             method: 'POST',
             headers: {

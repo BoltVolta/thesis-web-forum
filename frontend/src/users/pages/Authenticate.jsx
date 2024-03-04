@@ -1,83 +1,229 @@
 import { useRef, useState, useContext } from 'react';
 import { useMutation } from 'react-query';
+import { useNavigate } from "react-router-dom";
 
-import Button from '../../shared/components/button/Button';
-import Card from '../../shared/components/card/Card';
-import Input from '../../shared/components/input/Input';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
+import Joi from "joi";
 
 import { loginUser, signUpUser } from '../api/users';
 import { AuthContext } from '../../shared/context/auth-context';
 
 import './Authenticate.css';
 
-const Authenticate = props => {
+const Authenticate = (props) => {
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
+  const navigate = useNavigate();
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   const [isLoginMode, setLoginMode] = useState(true);
+
   const auth = useContext(AuthContext);
 
-  const switchModeHandler = () => {
-    setLoginMode(prevMode => !prevMode);
-  }
+  const schema = Joi.object().keys({
+    name: Joi.string().min(3).max(20).required(),
+    email: Joi.string()
+      .min(4)
+      .email({ tlds: { allow: false } })
+      .required(),
+    password: Joi.string().min(8).required(),
+  });
 
-  const signUpUserMutation = useMutation({
+  const validateData = (user) => {
+    const result = schema.validate(user, { abortEarly: false });
+
+    if (result.error) {
+      const errors = {};
+      result.error.details.forEach((err) => {
+        errors[err.path[0]] = err.message;
+        // errors[err.context.key] = err.message;
+        console.log(errors);
+      });
+
+      nameRef.current.style.backgroundColor =
+        user.name.length >= 3 ? "#d4edda" : user.name ? "salmon" : "salmon";
+      emailRef.current.style.backgroundColor =
+        user.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)
+          ? "#d4edda"
+          : "salmon";
+      passwordRef.current.style.backgroundColor =
+        user.password.length >= 8
+          ? "#d4edda"
+          : user.password
+          ? "salmon"
+          : "salmon";
+
+      setInputError(errors);
+      return false;
+    } else {
+      nameRef.current.style.backgroundColor = "#d4edda";
+      emailRef.current.style.backgroundColor = "#d4edda";
+      passwordRef.current.style.backgroundColor = "#d4edda";
+      setInputError();
+      return true;
+    }
+  };
+
+  const switchModeHanlder = () => {
+    setLoginMode((prevMode) => !prevMode);
+    setInputError();
+    if (nameRef.current) {
+      nameRef.current.style.backgroundColor = backgroundColor;
+    }
+    if (emailRef.current) {
+      emailRef.current.style.backgroundColor = backgroundColor;
+      emailRef.current.value = "";
+    }
+    if (passwordRef.current) {
+      passwordRef.current.style.backgroundColor = backgroundColor;
+      passwordRef.current.value = "";
+    }
+  };
+
+   const signUpUserMutation = useMutation({
     mutationFn: signUpUser,
     onSuccess: (data) => {
+      // Will execute only once, for the last mutation,
+      // regardless which mutation resolves first
       console.log(data);
-      auth.login(data.id, data.token);
+      auth.login(data.id, data.token, data.role);
+      navigate("/api/topics/");
     },
     onError: (error) => {
-      console.log(error)
-    }
+      console.log(error);
+      setInputError({ signup: "Email exists" });
+      // if (emailRef.current) {
+      //  emailRef.current.style.backgroundColor = "salmon";
+      // }
+    },
   });
 
   const loginUserMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      auth.login(data.id, data.token);
+      // Will execute only once, for the last mutation,
+      // regardless which mutation resolves first
+      console.log(data);
+      auth.login(data.id, data.token, data.role);
+      navigate("/api/topics/");
     },
     onError: (error) => {
-      console.log(error)
-    }
+      // An error happened!
+      setInputError({ login: "Wrong credentials" });
+      console.log(error);
+    },
   });
 
-  const onSubmitHandler = event => {
+  const onSubmitHandler = (event) => {
     event.preventDefault();
-    if(isLoginMode) {
+    if (!isLoginMode) {
+      if (
+        !validateData({
+          name: nameRef.current.value,
+          email: emailRef.current.value,
+          password: passwordRef.current.value,
+        })
+      ) {
+        return;
+      }
+    }
+
+    if (isLoginMode) {
       loginUserMutation.mutate({
         email: emailRef.current.value,
-        password: passwordRef.current.value
+        password: passwordRef.current.value,
       });
     } else {
       signUpUserMutation.mutate({
-        name: nameRef.current.value,
+        username: nameRef.current.value,
         email: emailRef.current.value,
-        password: passwordRef.current.value
-
+        password: passwordRef.current.value,
       });
     }
-  }
+  };
 
-  return (
-    <Card className="authentication">
-      <h2>{isLoginMode? 'Login': 'Sign Up'}</h2>
-      <form onSubmit={onSubmitHandler}>
-        {!isLoginMode &&
-          <Input id="name" ref={nameRef} type="text" label="Name" />
-        }
-        <Input id="email" ref={emailRef} type="email" label="Email" />
-        <Input id="password" ref={passwordRef} type="password" label="Password" />
-        <Button type="submit">
-          {isLoginMode? 'LOGIN' : 'SIGNUP'}
+   return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+      className="background"
+    >
+      <Card
+        style={{ padding: "20px", backgroundColor: backgroundColor, marginTop: '0'}}
+        data-testid="authPage"
+        className="authentication"
+      >
+        <h2>{isLoginMode ? "Login" : "Sign Up"}</h2>
+        <form onSubmit={onSubmitHandler}>
+          {" "}
+          {!isLoginMode && (
+            <Input id="name" ref={nameRef} type="text" label="Name" />
+          )}
+          <Input id="email" ref={emailRef} type="text" label="Email" />
+          <Input
+            id="password"
+            ref={passwordRef}
+            type="password"
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Password"
+          />
+          <Button variant="contained" type="submit" className="buttons">
+            {isLoginMode ? "LOGIN" : "SIGNUP"}
+          </Button>
+        </form>
+        <Button
+          variant="outlined"
+          onClick={switchModeHanlder}
+          className="signUp"
+        >
+          {isLoginMode ? "SignUp" : "Login"} instead?
         </Button>
-      </form>
-      <Button inverse onClick={switchModeHandler}>
-        {isLoginMode? 'SignUp':'Login'} instead?
-      </Button>
-    </Card>
-  )
+        {inputError ? (
+          <div style={{ color: "red" }}>{inputError.name}</div>
+        ) : null}
+        {inputError ? (
+          <div style={{ color: "red" }}>{inputError.email}</div>
+        ) : null}
+        {inputError ? (
+          <div style={{ color: "red" }}>{inputError.password}</div>
+        ) : null}
+        {inputError ? (
+          <div style={{ color: "red" }}>{inputError.login}</div>
+        ) : null}
+        {inputError ? (
+          <div style={{ color: "red" }}>{inputError.signup}</div>
+        ) : null}
+      </Card>
+    </div>
+  );
 };
 
 export default Authenticate;
