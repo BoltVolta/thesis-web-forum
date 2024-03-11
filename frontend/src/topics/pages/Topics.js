@@ -1,47 +1,41 @@
-import React, { useState } from "react";
+import React from "react";
+import { useQuery } from "react-query";
+import { getTopics } from "../api/topics";
+import CircularProgress from '@mui/material/CircularProgress';
+import TopicsList from "../components/TopicsList";
 
 const Topics = () => {
-    const [thread, setThread] = useState("");
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log({ thread });
-        setThread("");
-    };
+    /*const { isLoading, error, data } = useQuery("topicsData", getTopics);
 
-    return (<>
-        <main className='topics'>
-            <h2 className='topicsTitle'>Create a Thread</h2>
-            <form className='topicsForm' onSubmit={handleSubmit}>
-                <div className='topics__container'>
-                    <label htmlFor='thread'>Title / Description</label>
-                    <input
-                        type='text'
-                        name='thread'
-                        required
-                        value={thread}
-                        onChange={(e) => setThread(e.target.value)}
-                    />
-                </div>
-                <button className='homeBtn'>CREATE THREAD</button>
-            </form>
-            <div className='thread__container'>
-                {threadList.map((thread) => (
-                    <div className='thread__item' key={thread.id}>
-                        <p>{thread.title}</p>
-                        <div className='react__container'>
-                            <Likes numberOfLikes={thread.likes.length} threadId={thread.id} />
-                            <Comments
-                                numberOfComments={thread.replies.length}
-                                threadId={thread.id}
-                                title={thread.title}
-                            />
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </main>
-    </>);
+    if (isLoading) return (
+        <div className="center">
+            <CircularProgress />;
+        </div>
+    );
+
+    if (error) return "An error has occurred: " + error.message;*/
+
+    const data = [{
+        key: 1,
+        id: 1,
+        name: "test"
+    },
+    {
+        key: 2,
+        id: 2,
+        name: "test2"
+    },
+    {
+        key: 3,
+        id: 3,
+        name: "test3"
+    }]
+    return (
+        <div>
+            <TopicsList items={data} />
+        </div>
+    )
 };
 
 export default Topics;

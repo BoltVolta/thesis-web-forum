@@ -38,7 +38,7 @@ export const createPost = async ({ name, token }) => {
     return await res.json();
 };
 
-export const EditPost = async ({ id, token }) => {
+export const editPost = async ({ id, token }) => {
     const res = await fetch(
         `https://localhost:5000/api/posts/${id}/edit`,
         {

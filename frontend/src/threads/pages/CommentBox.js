@@ -1,37 +1,14 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
-import axios from "axios";
 import { useContext } from 'react';
-import { AuthContext } from '../components/auth-context';
-import "./AddTip.css"
-
-function commentBox(props) {
+import { AuthContext } from '../../shared/context/auth-context';
+import { createPost } from "../api/Threads";
+import "./CommentBox.css";
+function CommentBox(props) {
 	const auth = useContext(AuthContext);
-
-	const AddComment = async () => {
-		const comment = { topic_id: req.body.topic_id, body: formikTip.values.body, likes: req.body.likes, created_by: auth.userId };
-		try {
-			const response = await axios.post(
-				`${process.env.REACT_APP_LOCAL_BACKEND_URL}/api/threads/${comment.topic_id}`,
-				comment,
-				{
-					headers: {
-						"Content-Type": "application/json",
-						'Accept': 'application/json',
-						Authorization: 'Bearer ' + auth.token
-					},
-				}
-			);
-			formikTip.values.body = "";
-			formikTip.errors.body = "";
-		} catch (err) {
-			console.log(err.message)
-		}
-	};
 
 	const validateComment = (values) => {
 		const errors = {};
@@ -42,48 +19,21 @@ function commentBox(props) {
 		return errors;
 	};
 
-	const formikTip = useFormik({
+	const formikPost = useFormik({
 		initialValues: {
 			body: "",
-			topic: topic,
 		},
 		validate: validateComment,
-		onSubmit: AddComment,
+		onSubmit: createPost,
 	});
 
-	let textColor = "";
-	let backgroundColor = "";
-	let textAreaOutlineColor = "";
-	let attentionBackground = "";
-	if (props.theme === 'light') {
-		textColor = 'black'
-		backgroundColor = 'white';
-		textAreaOutlineColor = 'primary';
-		attentionBackground = "#f2f6fc";
-	}
-	else {
-		textColor = '#ECECEC';
-		backgroundColor = '#1c1c1c';
-		textAreaOutlineColor = '#bb86fc';
-		attentionBackground = "#373737";
-	}
+
 
 	return (
-		<div data-testid="commentBox" className="background" style={{ paddingBottom: '10px', paddingTop: '20px' }}>
-			<Typography
-				component="h5"
-				variant="h3"
-				textAlign="center"
-				color={textColor}
-				marginTop="3rem"
-				gutterBottom
-				sx={{ marginTop: '0' }}
-			>
-				Write your reply...
-			</Typography>
+		<div data-testid="commentBox" className="background" style={{ paddingBottom: '5px' }}>
 			<Box
 				component="form"
-				onSubmit={formikTip.handleSubmit}
+				onSubmit={formikPost.handleSubmit}
 				textAlign="center"
 				alignContent="center"
 				justifyContent="center"
@@ -91,7 +41,7 @@ function commentBox(props) {
 				flexGrow="1"
 				sx={{
 					"& > :not(style)": {
-						mt: 3,
+						mt: 1,
 						ml: "auto",
 						mr: "auto",
 						width: "90%",
@@ -116,29 +66,29 @@ function commentBox(props) {
 				>
 				</Box>
 				<TextField
-					id="description"
-					name="description"
-					label="New Tip Description"
+					id="body"
+					name="post"
+					label="Write your reply..."
 					multiline={true}
 					rows={10}
 					variant="outlined"
 					inputProps={{ maxLength: 2000 }}
-					onChange={formikTip.handleChange}
-					value={formikTip.values.body}
+					onChange={formikPost.handleChange}
+					value={formikPost.values.body}
 					sx={{
 						"& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
 						{
-							borderColor: textAreaOutlineColor,
+							borderColor: "black",
 						},
-						backgroundColor: backgroundColor,
+						backgroundColor: "#e9e9e9",
 					}}
 				/>
-				{formikTip.errors.body ? (
+				{formikPost.errors.body ? (
 					<Box
 						display="block"
 						style={{ color: "red", textAlign: "inherit" }}
 					>
-						{formikTip.errors.body}
+						{formikPost.errors.body}
 					</Box>
 				) : null}
 				<Button
@@ -148,7 +98,7 @@ function commentBox(props) {
 					sx={{ mt: 3, mb: 2, display: "block" }}
 					className="buttons"
 				>
-					New Comment
+					Post reply
 				</Button>
 			</Box>
 		</div>

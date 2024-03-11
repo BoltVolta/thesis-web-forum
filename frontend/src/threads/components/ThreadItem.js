@@ -1,9 +1,27 @@
-import React, { useContext, useRef } from "react";
-import { useQuery } from 'react-query'
+import React, { useContext, useState, useRef } from "react";
+import { useQuery, useMutation } from 'react-query'
 import { AuthContext } from '../../shared/context/auth-context';
 import { getPostsByTopicId, editPost } from "../api/Threads";
+import { Input, Button, Modal, Box, Typography, Backdrop, CircularProgress } from "@mui/material";
 
-import "./Threads.css";
+import "./ThreadItem.css";
+
+const modalBox = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4
+};
+
+const center = {
+    right: '50%',
+    left: '40%'
+}
 
 const ThreadItem = props => {
     const auth = useContext(AuthContext);
@@ -43,32 +61,61 @@ const ThreadItem = props => {
         history.replace('/');
     }
 
-    const { isLoading, error, data, status } = useQuery({
+    /*const { isLoading, error, data, status } = useQuery({
         queryKey: ['postsById', { topic_id: props.topic_id }],
         queryFn: getPostsByTopicId
     });
 
     if (isLoading) return (
         <div className="center">
-            <LoadingSpinner />;
+            <CircularProgress />;
         </div>
-    );
+    );*/
 
     return (
         <>
             <Modal
-                show={showEditModal}
-                header="Edit Listing"
-                footerClass="place-item__modal-actions"
-                footer={
-                    <>
-                        <Button inverse onClick={cancelEditHandler}>Cancel</Button>
-                        <Button edit onClick={postSubmitHandler}>Edit</Button>
-                    </>
-                }
+                open={showConfirmationModal}
+                onClose={cancelConfirmationHandler}
+                closeAfterTransition
+                slots={{ backdrop: Backdrop }}
+                slotProps={{
+                    backdrop: {
+                        timeout: 500,
+                    },
+                }}
             >
-                <Input id="body" ref={bodyRef} type="text" label="body" />
-            </Modal>
+                <Box sx={modalBox}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2" color="common.black">
+                        Are you sure?
+                    </Typography>
+                    <Typography id="modal-modal-description" color="common.black">
+                        Once it's gone, it's gone!
+                    </Typography>
+                    <Button sx={center} delete onClick={showConfirmationHandler}>Delete</Button>
+                </Box>
+            </Modal >
+            <Modal
+                open={showEditModal}
+                onClose={cancelEditHandler}
+                closeAfterTransition
+                slots={{ backdrop: Backdrop }}
+                slotProps={{
+                    backdrop: {
+                        timeout: 500,
+                    },
+                }}
+            >
+                <Box sx={modalBox}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2" color="common.black">
+                        Edit Your Post
+                    </Typography>
+                    <Input id="body" ref={bodyRef} type="text" label="body" />
+
+                    <Button sx={center} edit onClick={postSubmitHandler}>Update</Button>
+                </Box>
+            </Modal >
+
             <div>
                 <div class="message-inner">
                     <div class="message-cell message-cell--user">
@@ -84,9 +131,8 @@ const ThreadItem = props => {
                             </div>
                             <div class="message-userDetails">
                                 <h4 class="message-name"><a class="username " dir="auto"
-                                    data-user-id="37541" data-xf-init="member-tooltip" id="js-XFUniqueId78">${props.username}</a>
+                                    data-user-id="37541" data-xf-init="member-tooltip" id="js-XFUniqueId78">{props.created_by}</a>
                                 </h4>
-                                <h5 class="userTitle message-userTitle" dir="auto">${props.created_by}</h5>
                             </div>
                             <span class="message-userArrow"></span>
                         </section>
@@ -95,17 +141,15 @@ const ThreadItem = props => {
                         <div class="message-main js-quickEditTarget">
                             <div class="message-content  js-messageContent">
                                 <div class="message-userContent lbContainer js-lbContainer">
-                                    <article class="message-body js-selectToQuote">
-                                        <div class="bbWrapper"><span>${props.body}</span>
+                                    <article class="message-body">
+                                        <div class="bbWrapper"><span>{props.body}</span>
                                         </div>
                                     </article>
                                 </div>
                             </div>
                             <footer class="message-footer">
                                 <div class="message-actionBar actionBar">
-                                    <div class="message-lastEdit  ">
-                                        Last edited: <span>${props.updated}</span>
-                                    </div>
+                                    <div class="actionBar-set actionBar-set--internal">Last edited: <span>{props.updated}</span></div>
                                     <div class="actionBar-set actionBar-set--external">
                                         <a class="actionBar-action actionBar-action--like"
                                             data-xf-click="overlay">Like</a>

@@ -1,10 +1,11 @@
-import { useState, useCallback, useEffect } from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import { useState, useCallback, useEffect, Fragment } from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { AuthContext } from './shared/context/auth-context';
 import Threads from './threads/pages/Threads';
 import Authenticate from './users/pages/Authenticate';
-import MainNavigation from './shared/components/navigation/MainNavigation';
+import NavComponent from './shared/components/navigation/NavComponent';
+import Topics from './topics/pages/Topics';
 import './App.css';
 
 const queryClient = new QueryClient();
@@ -60,33 +61,18 @@ function App() {
 	let routes;
 	if (token) {
 		routes = (
-			<Switch>
-				<Route path="/topics" exact>
-					<Topics />
-				</Route>
-				<Route path="/topics/:id" exact>
-					<Threads />
-				</Route>
-				<Route path="/users" exact>
-					<Users />
-				</Route>
-				<Redirect to="/topics" />
-			</Switch>
+			<Routes>
+				<Route path="/" element={<Threads />} />
+				<Route path="/topics/:id" element={<Threads />} />
+			</Routes>
 		);
 	} else {
 		routes = (
-			<Switch>
-				<Route path="/topics" exact>
-					<Topics />
-				</Route>
-				<Route path="/topics/:id" exact>
-					<Threads />
-				</Route>
-				<Route path="/auth">
-					<Authenticate />
-				</Route>
-				<Redirect to="/topics" />
-			</Switch>
+			<Routes>
+				<Route path="/" element={<Threads />} />
+				<Route path="/topics/:id" element={<Threads />} />
+				<Route path="/auth" element={<Authenticate />} />
+			</Routes>
 		);
 	}
 	return (
@@ -100,12 +86,12 @@ function App() {
 			}}
 		>
 			<QueryClientProvider client={queryClient}>
-				<Router>
-					<MainNavigation />
+				<BrowserRouter>
+					<NavComponent />
 					<main>
 						{routes}
 					</main>
-				</Router>
+				</BrowserRouter>
 			</QueryClientProvider>
 		</AuthContext.Provider>
 	);

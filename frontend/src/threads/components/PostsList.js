@@ -2,7 +2,7 @@ import React from "react";
 
 import ThreadItem from './ThreadItem';
 
-import './ListingsList.css';
+import './PostsList.css';
 
 const PostsList = props => {
     if (props.items.length === 0) {
@@ -15,7 +15,7 @@ const PostsList = props => {
 
     return <ul className="posts-list">
         {props.items.map(post =>
-            <ListingItem
+            <ThreadItem
                 key={post.topic_id}
                 id={post.id}
                 created_by={post.created_by}

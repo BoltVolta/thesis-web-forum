@@ -1,63 +1,3 @@
-/*####################################*/
-            /*NAV BAR*/
-/*####################################*/
-.topnav {
-  overflow: hidden;
-  background-color: #e9e9e9;
-  border-radius: 3px;
-}
-
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: left;
-  display: block;
-  color: black;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-/* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Style the "active" element to highlight the current page */
-.topnav a.active {
-  background-color: #2196F3;
-  color: white;
-}
-
-/* Style the search box inside the navigation bar */
-.topnav input[type=text] {
-  float: right;
-  padding: 6px;
-  border: none;
-  margin-top: 8px;
-  margin-right: 16px;
-  font-size: 17px;
-}
-
-/*####################################*/
-            /*MAIN*/
-/*####################################*/
-body {
-    background-color: #a7afcf;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  font-variant-ligatures: none;
-  -moz-font-feature-settings: "liga" 0;
-  overflow-y: auto;
-  font-size: 0.833rem;
-  margin-left: 12rem;
-  margin-right: 12rem;
-}
-
-/*####################################*/
-            /*THREAD*/
-/*####################################*/
 .block--messages .message, .block--messages .block-row {
   color: #ccc;
 }
@@ -70,6 +10,7 @@ body {
 * {
   box-sizing: border-box;
 }
+
 @media (min-width: 651px) {
   .block--messages .message-inner .message-cell.message-cell--user {
     background-color: transparent;
@@ -92,7 +33,6 @@ body {
 }
 .message-cell {
   display: block;
-  vertical-align: top;
   padding: 10px;
 }
 @media (min-width: 651px) {
@@ -231,6 +171,7 @@ a {
   width: 100%;
   min-width: 0;
   background-color: #e9e9e9;
+  color: #000;
 }
 .message-cell {
   display: block;
@@ -243,9 +184,7 @@ a {
   flex-direction: column;
 }
 .bbWrapper{
-  text-align: left;
-  word-wrap: break-word;
-  white-space: pre-wrap;
+  white-space: pre;
 }
 .message-main .message-attribution {
   padding-bottom: 10px;
@@ -270,7 +209,12 @@ article, aside, details, figcaption, figure, footer, header, main, menu, nav, se
   flex: 1 1 auto;
   min-height: 1px;
 }
-message-footer {
+.message-body {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.message-footer {
   margin-top: auto;
 }
 article, aside, details, figcaption, figure, footer, header, main, menu, nav, section {
@@ -289,6 +233,10 @@ article, aside, details, figcaption, figure, footer, header, main, menu, nav, se
 .actionBar-set.actionBar-set--external {
   float: right;
   margin-right: -3px;
+}
+.actionBar-set.actionBar-set--internal {
+  float: left;
+  margin-left: -3px;
 }
 .message-footer .message-actionBar .actionBar-set--external a {
   color: #2196F3;
