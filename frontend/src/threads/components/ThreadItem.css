@@ -281,6 +281,9 @@ a {
   background: #60646f;
   border-color: #545861 #6c707d #6c707d #545861;
 }
+.button__edit{
+  align-items: left;
+}
 .button {
   display: inline-block;
   display: inline-flex;

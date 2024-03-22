@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useMutation } from 'react-query';
-
-import { Card, Button, Modal, Box, Typography, Backdrop, StyledEngineProvider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Card, Button, Modal, Box, Typography, Backdrop, StyledEngineProvider, Link } from "@mui/material";
 import { AuthContext } from '../../shared/context/auth-context';
 import { deleteTopic } from "../api/topics";
 
@@ -26,7 +26,7 @@ const center = {
 
 const TopicItem = props => {
     const auth = useContext(AuthContext);
-
+    const navigate = useNavigate();
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
     const showConfirmationHandler = () => setShowConfirmationModal(true);
@@ -84,11 +84,10 @@ const TopicItem = props => {
                             </span>
                             <div className="node-main js-nodeMain">
                                 <h3 className="node-title">
-                                    <a href="/forums/sql-boards.1/" data-xf-init="element-tooltip"
-                                        data-shortcut="node-description" id="js-XFUniqueId3">{props.name}</a>
+                                    <a data-xf-click="overlay" onClick={() => { navigate(`/api/threads/byTopic/${props.id}`) }} >{props.name}</a>
                                 </h3>
                                 <div className="node-description node-description--tooltip js-nodeDescTooltip">Last Post:
-                                    <span id="datetime"> 21/01/2024</span> Comments: <span id="commentNum">23</span>
+                                    <span id="datetime"> Not implemented yet</span> Comments: <span id="commentNum">Not implemented yet</span>
                                 </div>
                             </div>
                             <div className="topic-item_actions">

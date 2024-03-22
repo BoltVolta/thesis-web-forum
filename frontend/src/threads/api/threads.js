@@ -1,9 +1,9 @@
 export const getPostsByTopicId = async ({ queryKey }) => {
     const posts = queryKey[1];
     console.log("api call")
-    console.log(posts);
+    console.log(posts.topic_id);
     const res = await fetch(
-        `https://localhost:5000/api/posts/byTopic/${posts.topic_id}`
+        `http://localhost:5000/api/threads/byTopic/${posts.topic_id}`
     );
     return await res.json();
 }
@@ -13,15 +13,15 @@ export const getPostById = async ({ queryKey }) => {
     console.log("api call")
     console.log(posts);
     const res = await fetch(
-        `https://localhost:5000/api/posts/get/${posts.id}`,
+        `http://localhost:5000/api/threads/get/${posts.id}`,
     );
     //var log = console.log(await res.json());
     return await res.json();
 };
 
-export const createPost = async ({ name, token }) => {
+export const createPost = async ({ body, token }) => {
     const res = await fetch(
-        `https://localhost:5000/api/posts/create`,
+        `http://localhost:5000/api/threads/create`,
         {
             method: 'POST',
             headers: {
@@ -30,7 +30,7 @@ export const createPost = async ({ name, token }) => {
                 Authorization: 'Bearer ' + token
             },
             body: JSON.stringify({
-                name
+                body
             })
         }
     );
@@ -40,7 +40,7 @@ export const createPost = async ({ name, token }) => {
 
 export const editPost = async ({ id, token }) => {
     const res = await fetch(
-        `https://localhost:5000/api/posts/${id}/edit`,
+        `http://localhost:5000/api/threads/${id}/edit`,
         {
             method: 'PATCH',
             headers: {
@@ -59,7 +59,7 @@ export const editPost = async ({ id, token }) => {
 
 export const deletePosts = async ({ id, token }) => {
     const res = await fetch(
-        `https://localhost:5000/api/posts/delete/${id}`,
+        `http://localhost:5000/api/threads/delete/${id}`,
         {
             method: 'DELETE',
             headers: {
@@ -73,7 +73,7 @@ export const deletePosts = async ({ id, token }) => {
 
 export const deleteByTopicId = async ({ id, token }) => {
     const res = await fetch(
-        `https://localhost:5000/api/posts/del-by-topic/${id}`,
+        `http://localhost:5000/api/threads/del-by-topic/${id}`,
         {
             method: 'DELETE',
             headers: {

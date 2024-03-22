@@ -3,13 +3,13 @@ const pool = require('../db/pool');
 const users = {
   findAll: () => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
-      if(err) {
+      if (err) {
         return reject(err);
       }
-      const selectQuery = 'SELECT id, username, email FROM users;';
+      const selectQuery = 'SELECT id, username, email, password FROM users;';
       connection.query(selectQuery, (err, result) => {
         connection.release();
-        if(err) {
+        if (err) {
           return reject(err);
         }
         resolve(result);
@@ -18,13 +18,13 @@ const users = {
   }),
   create: (user) => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
-      if(err) {
+      if (err) {
         return reject(err);
       }
 
       connection.query('INSERT INTO users SET ?;', user, (err, result) => {
         connection.release();
-        if(err) {
+        if (err) {
           console.log(err);
           reject(err);
         } else {
@@ -35,12 +35,12 @@ const users = {
   }),
   findById: (id) => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
-      if(err) {
+      if (err) {
         return reject(err);
       }
       connection.query('SELECT id FROM users WHERE id LIKE ?;', id, (err, result) => {
         connection.release();
-        if(err) {
+        if (err) {
           console.log(result);
           return reject(err);
         }
@@ -50,12 +50,12 @@ const users = {
   }),
   findUserById: (id) => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
-      if(err) {
+      if (err) {
         return reject(err);
       }
       connection.query('SELECT username, email FROM users WHERE id LIKE ?;', id, (err, result) => {
         connection.release();
-        if(err) {
+        if (err) {
           console.log(result);
           return reject(err);
         }
@@ -65,12 +65,12 @@ const users = {
   }),
   findByEmail: (email) => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
-      if(err) {
+      if (err) {
         return reject(err);
       }
       connection.query('SELECT * FROM users WHERE email LIKE ?;', email, (err, result) => {
         connection.release();
-        if(err) {
+        if (err) {
           console.log(result);
           return reject(err);
         }

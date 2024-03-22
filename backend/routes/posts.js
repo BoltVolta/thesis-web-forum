@@ -10,9 +10,9 @@ router.get('/byTopic/:id', getPostsByTopicId);
 
 router.use(verifyToken);
 
-router.post('/', createPost);
-router.patch('/:id/edit', editPost);
-router.patch('/:id/like', updateLikes);
+router.post('/create', createPost);
+router.patch('/edit/:id/', editPost);
+router.patch('/like/:id/', updateLikes);
 router.delete('/delete/:id', deletePostById);
 router.delete('/del-by-topic/:id', deletePostByTopicId)
 

@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useContext } from 'react';
+import { NavLink } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -7,33 +9,28 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { AuthContext } from '../../context/auth-context';
+import { useNavigate } from 'react-router-dom';
 
-const pages = ['Topics', 'MyTopics', 'About'];
-const settings = ['Profile', 'Logout'];
+const pages = ['topics'];
 
 function NavComponent() {
+    const auth = useContext(AuthContext);
+    const navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
 
     return (
         <AppBar position="static">
@@ -87,11 +84,21 @@ function NavComponent() {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
-                            ))}
+                            <MenuItem>
+                                <Typography
+                                    textAlign="center"
+                                    component={NavLink}
+                                    to="/">
+                                    TOPICS
+                                </Typography>
+                                <Typography
+                                    textAlign="center"
+                                    component={NavLink}
+                                    to="/myTopics">
+                                    MYTOPICS
+                                </Typography>
+                            </MenuItem>
+
                         </Menu>
                     </Box>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -114,49 +121,47 @@ function NavComponent() {
                         LOGO
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
+                        <Button
+                            key={1}
+                            onClick={() => { navigate('/') }}
+                            sx={{ my: 2, color: 'white', display: 'block' }}
+                        >
+                            Topics
+                        </Button>
+                        <Button
+                            key={2}
+                            onClick={() => { navigate('/myTopics') }}
+                            sx={{ my: 2, color: 'white', display: 'block' }}
+                        >
+                            MyTopics
+                        </Button>
+
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Static Alt" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
+                        {!auth.isLoggedIn && (
+                            <Button
+                                component={NavLink}
+                                to="/auth"
+                                color="inherit"
+                            >
+                                Login
+                            </Button>
+                        )}
+                        {auth.isLoggedIn && (
+                            <Button
+                                component={NavLink}
+                                to="/"
+                                color="inherit"
+                                onClick={auth.logout}
+                            >
+                                LOGOUT
+                            </Button>
+                        )}
                     </Box>
                 </Toolbar>
             </Container>
-        </AppBar>
+        </AppBar >
     );
 }
 export default NavComponent;

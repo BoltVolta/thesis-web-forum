@@ -1,20 +1,20 @@
 const bcrypt = require('bcryptjs');
 const { v4 } = require('uuid');
 const jwt = require('jsonwebtoken');
-
+require('dotenv').config();
 const users = require('../models/users');
 
 const signUpUser = async (req, res) => {
-    const { id, name, email, password } = req.body;
+    const { id, username, email, password } = req.body;
     let hashedPassword;
     try {
         hashedPassword = await bcrypt.hash(password, 12);
     } catch (err) {
-        return res.status(500).send('Could not create user, try again please');
+        return res.status(500).send(err);
     }
     const newUser = {
         id,  //id: v4(),
-        name,
+        username,
         email,
         password: hashedPassword
     };
@@ -22,13 +22,13 @@ const signUpUser = async (req, res) => {
     try {
         const exist = await users.findByEmail(newUser.email);
         if (exist.length > 0) {
-            return res.status(422).send('Could not create user, user exists');
+            return res.status(422).send('Could not create user, user exists 1');
         }
 
         const result = await users.create(newUser);
         console.log(result);
         if (!result) {
-            return res.status(500).send('Could not create user, try again please');
+            return res.status(500).send('Could not create user, try again please 2');
         }
 
         const token = jwt.sign(
@@ -47,7 +47,7 @@ const signUpUser = async (req, res) => {
         })
 
     } catch (err) {
-        return res.status(500).send('Could not create user, try again please');
+        return res.status(500).send(err);
     }
 };
 
@@ -61,8 +61,9 @@ const loginUser = async (req, res) => {
             return res.status(401).send('No user found - Check your credentials');
         }
         identifiedUser = result[0];
+        console.log(identifiedUser);
     } catch (err) {
-        return res.status(500).send('Something went wrong');
+        return res.status(500).send(err);
     }
 
     let isValidPassword;
@@ -71,11 +72,13 @@ const loginUser = async (req, res) => {
         if (!isValidPassword) {
             return res.status(401).send('No user found - Check your credentials');
         }
+        console.log(isValidPassword);
     } catch (err) {
-        return res.status(500).send('Something went wrong');
+        return res.status(500).send(err);
     }
 
     try {
+        console.log("here?");
         const token = jwt.sign(
             {
                 id: identifiedUser.id,
@@ -84,14 +87,14 @@ const loginUser = async (req, res) => {
             process.env.JWT_KEY,
             { expiresIn: '1h' }
         );
-
+        console.log("here?");
         res.status(201).json({
             id: identifiedUser.id,
             email: identifiedUser.email,
             token
         })
     } catch (err) {
-        return res.status(500).send('Something went wrong');
+        return res.status(500).send("err");
     }
 };
 

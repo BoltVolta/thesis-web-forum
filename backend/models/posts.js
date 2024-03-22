@@ -107,13 +107,13 @@ const posts = {
       });
     });
   }),
-  updateLikesOnPost: (likes, id) => new Promise((resolve, reject) => {
+  updateLikesOnPost: (post) => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err)
         return reject(err);
 
-      const addLikeQuery = 'UPDATE posts SET likes=$1 WHERE id=$2';
-      connection.query(addLikeQuery, [likes, id], (err, result) => {
+      const addLikeQuery = 'UPDATE posts SET likes=? WHERE id=?';
+      connection.query(addLikeQuery, [post.likes, post.id], (err, result) => {
         connection.release();
         if (err) {
           return reject(err);

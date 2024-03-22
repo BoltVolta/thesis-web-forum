@@ -1,0 +1,75 @@
+GET http://localhost:5000/api/topics
+###
+GET http://localhost:5000/api/users
+###
+GET http://localhost:5000/api/threads
+
+###
+GET http://localhost:5000/api/topics
+
+###
+GET http://localhost:5000/api/topics/get/1
+
+###
+GET http://localhost:5000/api/threads/byTopic/2
+
+###
+POST  http://localhost:5000/api/topics/create
+Content-Type: application/json
+Authorization: BEARER {{authToken}}
+
+{
+    "name": "My Topic"
+
+}
+
+###
+DELETE http://localhost:5000/api/topics/delete/3
+Content-Type: application/json
+Authorization: BEARER {{authToken}}
+
+###
+POST http://localhost:5000/api/threads/create/
+Content-Type: application/json
+Authorization: BEARER {{authToken}}
+
+{
+    "topic_id": "2",
+    "body": "this is another localhost.rest command to check if this shit works for the purposes of finding all posts under topic id ",
+    "created_by": "testuser",
+    "likes": "10"
+
+}
+###
+PATCH http://localhost:5000/api/threads/like/7
+Content-Type: application/json
+Authorization: BEARER {{authToken}}
+
+{
+    "likes": "1000"
+}
+###
+DELETE http://localhost:5000/api/threads/del-by-topic/2
+Content-Type: application/json
+Authorization: BEARER {{authToken}}
+###
+POST http://localhost:5000/api/users/signup
+Content-Type: application/json
+
+{
+    "username": "testuser", "email": "testuser@gmail.com", "password": "test123"
+
+}
+
+###
+# @name login
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+    "email": "testuser@gmail.com", "password": "test123"
+
+}
+
+###
+@authToken = {{login.response.body.token}}

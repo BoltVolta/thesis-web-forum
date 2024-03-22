@@ -1,7 +1,9 @@
 export const getTopics = async () => {
+    console.log("here?");
     const res = await fetch(
-        `https://localhost:5000/api/topics/`
+        `http://localhost:5000/api/topics/`
     );
+    console.log(res);
     return await res.json();
 }
 
@@ -10,7 +12,7 @@ export const getTopicById = async ({ queryKey }) => {
     console.log("api call")
     console.log(topicId);
     const res = await fetch(
-        `https://localhost:5000/api/topics/get/${topicId.id}`,
+        `http://localhost:5000/api/topics/get/${topicId.id}`,
     );
     //var log = console.log(await res.json());
     return await res.json();
@@ -18,7 +20,7 @@ export const getTopicById = async ({ queryKey }) => {
 
 export const createTopic = async ({ name, token }) => {
     const res = await fetch(
-        `https://localhost:5000/api/topics/create`,
+        `http://localhost:5000/api/topics/create`,
         {
             method: 'POST',
             headers: {
@@ -37,7 +39,7 @@ export const createTopic = async ({ name, token }) => {
 
 export const deleteTopic = async ({ id, token }) => {
     const res = await fetch(
-        `https://localhost:5000/api/topics/delete/${id}`,
+        `http://localhost:5000/api/topics/delete/${id}`,
         {
             method: 'DELETE',
             headers: {

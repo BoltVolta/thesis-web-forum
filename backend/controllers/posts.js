@@ -20,7 +20,7 @@ const getPostsById = async (req, res) => {
       res.send(response);
     }
   } catch (err) {
-    res.status(500).send({ message: "Something went wrong" });
+    res.status(500).send(err);
   }
 };
 
@@ -32,19 +32,18 @@ const getPostsByTopicId = async (req, res) => {
       res.send(response);
     }
   } catch (err) {
-    res.status(500).send({ message: "Something went wrong" });
+    res.status(500).send(err);
   }
 };
 
 const createPost = async (req, res) => {
   const post = {
     topic_id: req.body.topic_id,
-    parent_id: req.body.parent_id,
     body: req.body.body,
     created_by: req.body.created_by,
     likes: req.body.likes
   }
-
+  console.log(post);
   try {
     const response = await posts.save(post);
     if (response) {
@@ -53,7 +52,7 @@ const createPost = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).send({ message: "Something went wrong" });
+    res.status(500).send(err);
   }
 };
 const editPost = async (req, res) => {
@@ -70,7 +69,7 @@ const editPost = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).send({ message: "Something went wrong" });
+    res.status(500).send(err);
   }
 };
 
@@ -82,32 +81,36 @@ const deletePostById = async (req, res) => {
       res.send(response[0]);
     }
   } catch (err) {
-    res.status(500).send({ message: "Something went wrong" });
+    res.status(500).send(err);
   }
 };
 
 const updateLikes = async (req, res) => {
+  const post = {
+    likes: req.body.likes
+  }
   try {
     const id = parseInt(req.params.id);
-    const likes = parseInt(req.params.likes);
-    const response = await posts.updateLikesOnPost(likes, id);
+    post.id = id;
+    posts.likes = post.likes + 1;
+    const response = await posts.updateLikesOnPost(post);
     if (response) {
       res.send(response[0]);
     }
   } catch (err) {
-    res.status(500).send({ message: "Something went wrong" });
+    res.status(500).send(err);
   }
 }
 
 const deletePostByTopicId = async (req, res) => {
   try {
-    const topic_id = parseInt(req.params.topic_id);
+    const topic_id = parseInt(req.params.id);
     const response = await posts.deleteByTopicId(topic_id);
     if (response) {
       res.send(response[0]);
     }
   } catch (err) {
-    res.status(500).send({ message: "Something went wrong" });
+    res.status(500).send(err);
   }
 };
 

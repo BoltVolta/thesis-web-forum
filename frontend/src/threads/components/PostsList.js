@@ -16,8 +16,9 @@ const PostsList = props => {
     return <ul className="posts-list">
         {props.items.map(post =>
             <ThreadItem
-                key={post.topic_id}
+                key={post.id}
                 id={post.id}
+                topic_id={post.topic_id}
                 created_by={post.created_by}
                 body={post.body}
                 likes={post.likes}

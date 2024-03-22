@@ -10,20 +10,13 @@ import "./CommentBox.css";
 function CommentBox(props) {
 	const auth = useContext(AuthContext);
 
-	const validateComment = (values) => {
-		const errors = {};
-
-		if (!values.body) {
-			errors.body = "Please enter a valid message.";
-		}
-		return errors;
-	};
-
 	const formikPost = useFormik({
 		initialValues: {
+			topic_id: props.topic_id,
 			body: "",
+			created_by: auth.userId,
+			likes: 0
 		},
-		validate: validateComment,
 		onSubmit: createPost,
 	});
 
@@ -83,14 +76,6 @@ function CommentBox(props) {
 						backgroundColor: "#e9e9e9",
 					}}
 				/>
-				{formikPost.errors.body ? (
-					<Box
-						display="block"
-						style={{ color: "red", textAlign: "inherit" }}
-					>
-						{formikPost.errors.body}
-					</Box>
-				) : null}
 				<Button
 					type="submit"
 					fullWidth

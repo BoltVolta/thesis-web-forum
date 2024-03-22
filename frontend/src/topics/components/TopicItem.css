@@ -209,6 +209,9 @@ a {
   font-size: 1rem;
   font-weight: 400;
 }
+.node-title :hover {
+  opacity: 0.8;
+}
 .node-icon {
   display: table-cell;
   vertical-align: middle;

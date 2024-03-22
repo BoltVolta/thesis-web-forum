@@ -3,16 +3,29 @@ const topics = require('../models/topics');
 
 // async method that uses the functions in the model.
 const getTopics = async (req, res) => {
-    const response = await topics.findAll();
-    if (response) {
-        res.send(response);
+    try {
+        const response = await topics.findAll();
+        if (response) {
+            res.send(response);
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
     }
 };
 const getTopicsById = async (req, res) => {
-    const response = await topics.findById();
-    if (response) {
-        res.send(response);
+    try {
+        const id = parseInt(req.params.id);
+        const response = await topics.findById(id);
+        if (response) {
+            res.send(response);
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
     }
+
 };
 
 const createTopic = async (req, res) => {
@@ -24,7 +37,7 @@ const createTopic = async (req, res) => {
         const response = await topics.save(topic);
         if (response) {
             topic.id = response.insertId;
-            res.status(201).send(post);
+            res.status(201).send(topic);
         }
     } catch (err) {
         console.log(err);

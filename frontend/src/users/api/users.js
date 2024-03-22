@@ -1,6 +1,6 @@
 export const getUsers = async () => {
     const res = await fetch(
-        `https://localhost:5000/api/users/`
+        `http://localhost:5000/api/users/`
     );
     return await res.json();
 }
@@ -10,7 +10,7 @@ export const getUserEmail = async ({ queryKey }) => {
     console.log("api call")
     console.log(userInfo);
     const res = await fetch(
-        `https://localhost:5000/api/users/${userInfo.id}`,
+        `http://localhost:5000/api/users/${userInfo.id}`,
     );
     //var log = console.log(await res.json());
     return await res.json();
@@ -18,7 +18,7 @@ export const getUserEmail = async ({ queryKey }) => {
 
 export const signUpUser = async ({ name, email, password }) => {
     const res = await fetch(
-        `https://localhost:5000/api/users/signup`,
+        `http://localhost:5000/api/users/signup`,
         {
             method: 'POST',
             headers: {
@@ -37,8 +37,10 @@ export const signUpUser = async ({ name, email, password }) => {
 };
 
 export const loginUser = async ({ email, password }) => {
+    console.log(email);
+    console.log(password);
     const res = await fetch(
-        `https://localhost:5000/api/users/login`,
+        `http://localhost:5000/api/users/login`,
         {
             method: 'POST',
             headers: {
@@ -51,6 +53,7 @@ export const loginUser = async ({ email, password }) => {
             })
         }
     );
+    console.log(res);
 
     return await res.json();
 };

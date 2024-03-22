@@ -4,12 +4,27 @@
 }
 
 .authentication {
-  width: 90%;
+  margin:auto;
+  position:relative;
+  width: 100%;
   max-width: 25rem;
-  margin: 7rem auto;
-  text-align: center;
+}
+.authentication form {
+  margin-bottom: 0.5rem;
 }
 
-.authentication form {
-  margin-bottom: 1rem;
+.background {
+  margin-top: 0.5rem;
+}
+
+.inputs {
+  width: 60%;
+  text-align: center;
+  align-items: center;
+  margin: 0.2rem;
+}
+.button {
+  display: block;
+  align-items: center;
+  margin: 0.2rem;
 }
