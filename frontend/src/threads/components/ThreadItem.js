@@ -2,9 +2,12 @@ import React, { useContext, useState, useRef } from "react";
 import { useQuery, useMutation } from 'react-query'
 import { AuthContext } from '../../shared/context/auth-context';
 import { editPost } from "../api/Threads";
-import { Input, Button, Modal, Box, Typography, Backdrop, CircularProgress, TextField } from "@mui/material";
-
+import { Input, Button, Modal, Box, Typography, Backdrop } from "@mui/material";
+import { getUserById } from "../../users/api/users";
 import "./ThreadItem.css";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import UserInfoItem from "./UserInfoItem";
 
 const modalBox = {
     position: 'absolute',
@@ -26,10 +29,13 @@ const center = {
 const ThreadItem = props => {
     const auth = useContext(AuthContext);
 
+    const { id, name } = useParams();
+
     const bodyRef = useRef();
-    const created_byRef = useRef();
     const likesRef = useRef();
     const updatedRef = useRef();
+
+    const navigate = useNavigate();
 
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -49,16 +55,14 @@ const ThreadItem = props => {
         }
     })
 
-    const postSubmitHandler = (event) => {
+    const postEditHandler = (event) => {
         event.preventDefault();
         editPostMutation.mutate({
-            created_by: created_byRef.current.value,
             body: bodyRef.current.value,
-            likes: likesRef.current.value,
             updated: updatedRef.current.value,
             token: auth.token
         })
-        history.replace('/');
+        navigate(`/${id}/${name}`, { replace: true });
     }
 
     return (
@@ -101,30 +105,13 @@ const ThreadItem = props => {
                     </Typography>
                     <Input id="body" ref={bodyRef} type="text" label="body" sx={{ display: "grid", margin: "auto", position: "relative" }} />
 
-                    <Button sx={{ display: "grid", margin: "auto", position: "relative" }} edit onClick={postSubmitHandler}>Update</Button>
+                    <Button sx={{ display: "grid", margin: "auto", position: "relative" }} edit onClick={postEditHandler}>Edit</Button>
                 </Box>
             </Modal >
 
             <div>
                 <div className="message-inner">
-                    <div className="message-cell message-cell--user">
-                        <section className="message-user">
-                            <div className="message-avatar">
-                                <div className="message-avatar-wrapper">
-                                    <a className="avatar avatar--m">
-                                        <img src="https://images.saymedia-content.com/.image/c_limit%2Ccs_srgb%2Cq_auto:eco%2Cw_700/MTk2OTY2NzAwMDk5MzE1MzQw/pet-turtle-or-tortoise.webp"
-                                            srcSet="https://images.saymedia-content.com/.image/c_limit%2Ccs_srgb%2Cq_auto:eco%2Cw_700/MTk2OTY2NzAwMDk5MzE1MzQw/pet-turtle-or-tortoise.webp"
-                                            className="avatar" width="96" height="96" loading="lazy" />
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="message-userDetails">
-                                <h4 className="message-name"><a className="username " dir="auto" ref={created_byRef}>{props.created_by}</a>
-                                </h4>
-                            </div>
-                            <span className="message-userArrow"></span>
-                        </section>
-                    </div>
+                    <UserInfoItem items={props.created_by} />
                     <div className="message-cell message-cell--main">
                         <div className="message-main js-quickEditTarget">
                             <div className="message-content  js-messageContent">

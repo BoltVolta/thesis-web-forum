@@ -1,9 +1,8 @@
 export const getTopics = async () => {
-    console.log("here?");
+    console.log("get topics");
     const res = await fetch(
         `http://localhost:5000/api/topics/`
     );
-    console.log(res);
     return await res.json();
 }
 

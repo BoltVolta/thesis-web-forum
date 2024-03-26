@@ -1,10 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { useMutation } from 'react-query';
 import { useNavigate } from "react-router-dom";
-import { Card, Button, Modal, Box, Typography, Backdrop, StyledEngineProvider, Link } from "@mui/material";
+import { Card, Button, Modal, Box, Typography, Backdrop, Input } from "@mui/material";
 import { AuthContext } from '../../shared/context/auth-context';
-import { deleteTopic } from "../api/topics";
-
+import { deleteTopic, createTopic } from "../api/topics";
 import './TopicItem.css';
 
 const modalBox = {
@@ -26,11 +25,14 @@ const center = {
 
 const TopicItem = props => {
     const auth = useContext(AuthContext);
+
     const navigate = useNavigate();
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
     const showConfirmationHandler = () => setShowConfirmationModal(true);
     const cancelConfirmationHandler = () => setShowConfirmationModal(false);
+
+    var linkName = props.name.replace(/ /g, '+');
 
     const deleteTopicMutation = useMutation({
         mutationFn: deleteTopic,
@@ -49,6 +51,7 @@ const TopicItem = props => {
             id: props.id,
             token: auth.token
         })
+        console.log("past deleteTopicMutation");
     }
 
     return (
@@ -80,11 +83,11 @@ const TopicItem = props => {
                     <div className="node node--id1 node--depth2 node--forum node--unread alwaysShow">
                         <div className="node-body">
                             <span className="node-icon" aria-hidden="true">
-                                <i className="fa--xf fal fa-comments" aria-hidden="true"></i>
+                                <i className="fa--xf fal fa-comments" aria-hidden="true">{props.id}</i>
                             </span>
                             <div className="node-main js-nodeMain">
                                 <h3 className="node-title">
-                                    <a data-xf-click="overlay" onClick={() => { navigate(`/api/threads/byTopic/${props.id}`) }} >{props.name}</a>
+                                    <a data-xf-click="overlay" onClick={() => { navigate(`/${props.id}/${linkName}`) }} >{props.name}</a>
                                 </h3>
                                 <div className="node-description node-description--tooltip js-nodeDescTooltip">Last Post:
                                     <span id="datetime"> Not implemented yet</span> Comments: <span id="commentNum">Not implemented yet</span>
@@ -93,7 +96,7 @@ const TopicItem = props => {
                             <div className="topic-item_actions">
                                 {auth.isLoggedIn && (
                                     <div className="button__delete">
-                                        <Button danger onClick={showConfirmationHandler}>Delete</Button>
+                                        <Button onClick={showConfirmationHandler}>Delete</Button>
                                     </div>
                                 )}
                             </div>

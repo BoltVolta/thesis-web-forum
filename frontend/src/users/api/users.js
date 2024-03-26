@@ -5,18 +5,17 @@ export const getUsers = async () => {
     return await res.json();
 }
 
-export const getUserEmail = async ({ queryKey }) => {
-    const userInfo = queryKey[1];
-    console.log("api call")
-    console.log(userInfo);
+export const getUserById = async ({ queryKey }) => {
+    const uid = queryKey[1];
+    console.log("here?");
     const res = await fetch(
-        `http://localhost:5000/api/users/${userInfo.id}`,
+        `http://localhost:5000/api/users/get/${uid.id}`,
     );
     //var log = console.log(await res.json());
     return await res.json();
-};
+}
 
-export const signUpUser = async ({ name, email, password }) => {
+export const signUpUser = async ({ username, email, password }) => {
     const res = await fetch(
         `http://localhost:5000/api/users/signup`,
         {
@@ -26,7 +25,7 @@ export const signUpUser = async ({ name, email, password }) => {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                name,
+                username,
                 email,
                 password
             })

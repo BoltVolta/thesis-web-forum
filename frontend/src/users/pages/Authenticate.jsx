@@ -67,8 +67,7 @@ const Authenticate = (props) => {
       // Will execute only once, for the last mutation,
       // regardless which mutation resolves first
       console.log(data);
-      auth.login(data.id, data.token, data.role);
-      navigate("/");
+      navigate("/auth");
     },
     onError: (error) => {
       console.log(error);
@@ -82,7 +81,7 @@ const Authenticate = (props) => {
       // Will execute only once, for the last mutation,
       // regardless which mutation resolves first
       console.log(data);
-      auth.login(data.id, data.token, data.role);
+      auth.login(data.id, data.token);
       navigate("/");
     },
     onError: (error) => {
@@ -118,12 +117,12 @@ const Authenticate = (props) => {
         <h2>{isLoginMode ? "Login" : "Sign Up"}</h2>
         <form className="authentication form" onSubmit={onSubmitHandler}>
           {!isLoginMode && (
-            <Input id="username" ref={nameRef} type="text" label="Username" className="inputs"/>
+            <Input id="username" inputRef={nameRef} type="text" label="Username" className="inputs"/>
           )}
-          <Input id="email" ref={emailRef} type="text" label="Email" className="inputs"/>
+          <Input id="email" inputRef={emailRef} type="text" label="Email" className="inputs"/>
           <Input
             id="password"
-            ref={passwordRef}
+            inputRef={passwordRef}
             type="password"
             endAdornment={
               <InputAdornment position="end">

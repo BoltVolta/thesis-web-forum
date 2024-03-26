@@ -1,32 +1,44 @@
-import React from "react";
+import React, { useContext, useRef, useState } from "react";
+import { useMutation } from "react-query";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { useFormik } from "formik";
-import { useContext } from 'react';
 import { AuthContext } from '../../shared/context/auth-context';
 import { createPost } from "../api/Threads";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./CommentBox.css";
-function CommentBox(props) {
+
+const CommentBox = () => {
+	const { id, name } = useParams();
 	const auth = useContext(AuthContext);
+	const navigate = useNavigate();
+	const [text, setText] = useState("");
+	const textRef = useRef();
+	const likes = 0;
 
-	const formikPost = useFormik({
-		initialValues: {
-			topic_id: props.topic_id,
-			body: "",
+	const createPostMutation = useMutation({
+		mutationFn: createPost
+	})
+
+	const replySubmitHandler = (event) => {
+		event.preventDefault();
+		createPostMutation.mutate({
+			topic_id: id,
+			body: textRef.current.value,
 			created_by: auth.userId,
-			likes: 0
-		},
-		onSubmit: createPost,
-	});
-
-
+			likes: likes,
+			token: auth.token
+		})
+		setText("");
+		navigate(`/${id}/${name}/`, { replace: true });
+	}
 
 	return (
 		<div data-testid="commentBox" className="background" style={{ paddingBottom: '5px' }}>
 			<Box
 				component="form"
-				onSubmit={formikPost.handleSubmit}
+				onSubmit={replySubmitHandler}
 				textAlign="center"
 				alignContent="center"
 				justifyContent="center"
@@ -59,15 +71,16 @@ function CommentBox(props) {
 				>
 				</Box>
 				<TextField
-					id="body"
-					name="post"
+					id="reply"
+					name="reply"
 					label="Write your reply..."
 					multiline={true}
 					rows={10}
 					variant="outlined"
 					inputProps={{ maxLength: 2000 }}
-					onChange={formikPost.handleChange}
-					value={formikPost.values.body}
+					onChange={(e) => { setText(e.target.value) }}
+					value={text}
+					inputRef={textRef}
 					sx={{
 						"& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
 						{
@@ -88,6 +101,7 @@ function CommentBox(props) {
 			</Box>
 		</div>
 	);
+
 }
 
 export default CommentBox;

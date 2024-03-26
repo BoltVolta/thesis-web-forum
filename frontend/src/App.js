@@ -65,14 +65,14 @@ function App() {
 		routes = (
 			<Routes>
 				<Route path="/" element={<Topics />} />
-				<Route path="api/topics/:id" element={<Threads />} />
+				<Route path="/:id/:name" element={<Threads />} />
 			</Routes>
 		);
 	} else {
 		routes = (
 			<Routes>
 				<Route path="/" element={<Topics />} />
-				<Route path="api/threads/byTopic/:id" element={<Threads />} />
+				<Route path="/:id/:name" element={<Threads />} />
 				<Route path="/auth" element={<Authenticate />} />
 			</Routes>
 		);

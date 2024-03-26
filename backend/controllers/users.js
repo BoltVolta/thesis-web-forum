@@ -119,7 +119,7 @@ const getUserByEmail = async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        res.status(500).send("Something went wrong");
+        res.status(500).send(err);
     }
 };
 
@@ -131,7 +131,7 @@ const getUserById = async (req, res) => {
             res.send(response);
         }
     } catch (err) {
-        res.status(500).send({ message: "Something went wrong" });
+        res.status(500).send(err);
     }
 };
 

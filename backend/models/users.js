@@ -53,7 +53,7 @@ const users = {
       if (err) {
         return reject(err);
       }
-      connection.query('SELECT username, email FROM users WHERE id LIKE ?;', id, (err, result) => {
+      connection.query('SELECT username FROM users WHERE id LIKE ?;', id, (err, result) => {
         connection.release();
         if (err) {
           console.log(result);

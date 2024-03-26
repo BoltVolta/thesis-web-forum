@@ -1,7 +1,5 @@
 export const getPostsByTopicId = async ({ queryKey }) => {
     const posts = queryKey[1];
-    console.log("api call")
-    console.log(posts.topic_id);
     const res = await fetch(
         `http://localhost:5000/api/threads/byTopic/${posts.topic_id}`
     );
@@ -10,8 +8,6 @@ export const getPostsByTopicId = async ({ queryKey }) => {
 
 export const getPostById = async ({ queryKey }) => {
     const posts = queryKey[1];
-    console.log("api call")
-    console.log(posts);
     const res = await fetch(
         `http://localhost:5000/api/threads/get/${posts.id}`,
     );
@@ -19,7 +15,7 @@ export const getPostById = async ({ queryKey }) => {
     return await res.json();
 };
 
-export const createPost = async ({ body, token }) => {
+export const createPost = async ({ topic_id, body, created_by, likes, token }) => {
     const res = await fetch(
         `http://localhost:5000/api/threads/create`,
         {
@@ -30,7 +26,10 @@ export const createPost = async ({ body, token }) => {
                 Authorization: 'Bearer ' + token
             },
             body: JSON.stringify({
-                body
+                topic_id,
+                body,
+                created_by,
+                likes
             })
         }
     );
