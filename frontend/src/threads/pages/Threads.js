@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useQuery } from "react-query";
 import CircularProgress from '@mui/material/CircularProgress';
 import PostsList from "../components/PostsList";
-import CommentBox from "./CommentBox";
+import CommentBox from "../components/CommentBox";
 import { getPostsByTopicId } from "./../api/Threads";
 import "./Threads.css";
 import { useParams } from "react-router-dom";
@@ -11,8 +11,10 @@ import { AuthContext } from "../../shared/context/auth-context";
 const Threads = () => {
     const auth = useContext(AuthContext);
     const { id, name } = useParams();
-    const { isLoading: isLoading, error: error, data: data, status: status } = useQuery({
+
+    const { isLoading, error, data } = useQuery({
         queryKey: ['postsByTopicId', { topic_id: id }],
+        refetchInterval: 250,
         queryFn: getPostsByTopicId
     });
 

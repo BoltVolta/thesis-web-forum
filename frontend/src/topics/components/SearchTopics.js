@@ -1,16 +1,17 @@
 import React from "react";
 import { useQuery } from "react-query";
-import { getTopics } from "../api/topics";
 import CircularProgress from '@mui/material/CircularProgress';
 import TopicsList from "../components/TopicsList";
-import CreateTopic from "../components/CreateTopic";
+import { getTopicsByName } from "../api/topics";
+import { useParams } from "react-router-dom";
+import './TopicItem.css';
 
-//import TablePagination from "@mui/material/TablePagination/";
 
-const Topics = () => {
-    const { isLoading, error, data } = useQuery({
-        queryKey: 'topicsData',
-        queryFn: getTopics
+const SearchTopics = () => {
+    const { name } = useParams();
+    const { isLoading, error, data, isSuccess } = useQuery({
+        queryKey: ['topics', { name: name }],
+        queryFn: getTopicsByName
     });
 
     if (isLoading) return (
@@ -23,10 +24,9 @@ const Topics = () => {
 
     return (
         <div>
-            <CreateTopic />
             <TopicsList items={data} />
         </div>
     )
 };
 
-export default Topics;
+export default SearchTopics;

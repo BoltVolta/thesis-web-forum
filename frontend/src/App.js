@@ -7,6 +7,7 @@ import Authenticate from './users/pages/Authenticate';
 import NavComponent from './shared/components/navigation/NavComponent';
 import Topics from './topics/pages/Topics';
 import './App.css';
+import SearchTopics from './topics/components/SearchTopics';
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ function App() {
 			<Routes>
 				<Route path="/" element={<Topics />} />
 				<Route path="/:id/:name" element={<Threads />} />
+				<Route path="/search/:name" element={<SearchTopics />} />
 			</Routes>
 		);
 	} else {
@@ -73,6 +75,7 @@ function App() {
 			<Routes>
 				<Route path="/" element={<Topics />} />
 				<Route path="/:id/:name" element={<Threads />} />
+				<Route path="/search/:name" element={<SearchTopics />} />
 				<Route path="/auth" element={<Authenticate />} />
 			</Routes>
 		);

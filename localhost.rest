@@ -8,6 +8,9 @@ GET http://localhost:5000/api/threads
 GET http://localhost:5000/api/topics
 
 ###
+GET http://localhost:5000/api/topics/search/test
+
+###
 GET http://localhost:5000/api/topics/get/1
 
 ###
@@ -19,7 +22,7 @@ Content-Type: application/json
 Authorization: BEARER {{authToken}}
 
 {
-    "name": "My Topic"
+    "name": "filler"
 
 }
 

@@ -56,7 +56,7 @@ const CreateTopic = () => {
                         New Topic's name
                     </Typography>
                     <Input id="topic" inputRef={topicRef} type="text" label="Topic" className="inputs" sx={{ width: "100%" }} />
-                    <Button type='submit' sx={{ display: "grid", margin: "auto", position: "relative" }} delete onClick={topicSubmitHandler}>Create Topic</Button>
+                    <Button type='submit' sx={{ display: "grid", margin: "auto", position: "relative" }} onClick={topicSubmitHandler}>Create Topic</Button>
                 </Box>
             </Modal >
             {auth.isLoggedIn && (

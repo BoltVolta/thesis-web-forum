@@ -7,9 +7,6 @@
     display: flex;
     font-size: large;
 }
-* {
-  box-sizing: border-box;
-}
 
 @media (min-width: 651px) {
   .block--messages .message-inner .message-cell.message-cell--user {
@@ -175,11 +172,10 @@ a {
 }
 .message-cell {
   display: block;
-  vertical-align: top;
   padding: 10px;
 }
 .message-main {
-  height: 100%;
+  height: 75%;
   display: flex;
   flex-direction: column;
 }
@@ -206,7 +202,7 @@ article, aside, details, figcaption, figure, footer, header, main, menu, nav, se
 
 .message-content {
   position: relative;
-  flex: 1 1 auto;
+  flex: auto;
   min-height: 1px;
 }
 .message-body {
@@ -214,20 +210,14 @@ article, aside, details, figcaption, figure, footer, header, main, menu, nav, se
   white-space: pre-wrap;
   word-break: break-word;
 }
-.message-footer {
-  margin-top: auto;
-}
+
 article, aside, details, figcaption, figure, footer, header, main, menu, nav, section {
   display: block;
 }
 .message-footer .message-actionBar {
-  margin-top: 10px;
-}
-.message-footer .message-actionBar .actionBar-set {
-  margin-top: 0;
+  margin-top: 1px;
 }
 .message-actionBar .actionBar-set {
-  margin-top: 10px;
   font-size: 0.813rem;
 }
 .actionBar-set.actionBar-set--external {
@@ -269,7 +259,6 @@ a {
 .actionBar-action.actionBar-action--sv-rate .sv-rating-type__icon {
   padding: 0;
 }
-
 .actionBar-action.actionBar-action--sv-rate .sv-rating-type__text {
   justify-content: flex-start;
 }
@@ -317,6 +306,15 @@ a {
 }
 button:active{
    background-color:white;
+}
+
+.message-arrtibution {
+  font-size: 0.813rem;
+}
+.message-attribution--split {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
 }
 
 /*####################################*/

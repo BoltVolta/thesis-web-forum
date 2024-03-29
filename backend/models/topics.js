@@ -30,6 +30,21 @@ const topics = {
             });
         });
     }),
+    findByName: (name) => new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err)
+                return reject(err);
+
+            const selectQuery = 'SELECT * FROM topics WHERE name LIKE ?';
+            connection.query(selectQuery, name, (err, result) => {
+                connection.release();
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
+        });
+    }),
     save: (topic) => new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err)

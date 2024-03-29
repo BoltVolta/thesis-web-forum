@@ -27,6 +27,21 @@ const getTopicsById = async (req, res) => {
     }
 
 };
+const getTopicsByName = async (req, res) => {
+    try {
+        const name = req.params.name;
+        const searchName = '%' + name + '%';
+        const response = await topics.findByName(searchName);
+        if (response) {
+            res.send(response);
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+
+};
 
 const createTopic = async (req, res) => {
     const topic = {
@@ -62,6 +77,7 @@ const deleteTopicById = async (req, res) => {
 module.exports = {
     getTopics,
     getTopicsById,
+    getTopicsByName,
     createTopic,
     deleteTopicById
 };

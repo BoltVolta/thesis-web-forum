@@ -8,10 +8,20 @@ export const getTopics = async () => {
 
 export const getTopicById = async ({ queryKey }) => {
     const topicId = queryKey[1];
-    console.log("api call")
+    console.log("api call");
     console.log(topicId);
     const res = await fetch(
         `http://localhost:5000/api/topics/get/${topicId.id}`,
+    );
+    //var log = console.log(await res.json());
+    return await res.json();
+};
+export const getTopicsByName = async ({ queryKey }) => {
+    const topic = queryKey[1];
+    console.log("api call");
+    console.log(topic.name);
+    const res = await fetch(
+        `http://localhost:5000/api/topics/search/${topic.name}`,
     );
     //var log = console.log(await res.json());
     return await res.json();
