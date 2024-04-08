@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from 'react-query'
 import { getUserById } from "../../users/api/users";
+import { useNavigate, useParams } from "react-router-dom";
 import "./ThreadItem.css";
 
 const UserInfoItem = props => {
     const [username, setUsername] = useState("");
+    const navigate = useNavigate();
+    const { id, name } = useParams();
 
     const { isLoading, error, data, isSuccess } = useQuery({
-        queryKey: ['username', { id: props.items }],
-        queryFn: getUserById
-    });
+        queryKey: ['userId', { userId: props.items }],
+        queryFn: getUserById,
+        enabled: !!props.items
 
+    });
     useEffect(() => {
-        if (data && data[0].username) {
-            setUsername(data[0].username);
+        if (data) {
+            let usernames = data.map(function (element) {
+                if (typeof element.username !== "undefined")
+                    return `${element.username}`;
+            });
+            setUsername(usernames);
         }
-    }, [data, username]);
+    }, [data])
+
 
     if (isLoading || !username) return (
         <div className="message-cell message-cell--user">

@@ -6,16 +6,15 @@ export const getUsers = async () => {
 }
 
 export const getUserById = async ({ queryKey }) => {
-    const uid = queryKey[1];
-    console.log("here?");
+    const user = queryKey[1];
     const res = await fetch(
-        `http://localhost:5000/api/users/get/${uid.id}`,
+        `http://localhost:5000/api/users/get/${user.userId}`,
     );
     //var log = console.log(await res.json());
     return await res.json();
 }
 
-export const signUpUser = async ({ username, email, password }) => {
+export const signUpUser = async ({ username, email, admin, password }) => {
     const res = await fetch(
         `http://localhost:5000/api/users/signup`,
         {
@@ -27,7 +26,8 @@ export const signUpUser = async ({ username, email, password }) => {
             body: JSON.stringify({
                 username,
                 email,
-                password
+                password,
+                admin
             })
         }
     );
@@ -52,7 +52,6 @@ export const loginUser = async ({ email, password }) => {
             })
         }
     );
-    console.log(res);
 
     return await res.json();
 };

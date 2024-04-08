@@ -19,6 +19,8 @@ const TopicsList = props => {
                 key={topic.id}
                 id={topic.id}
                 name={topic.name}
+                created_by={topic.created_by}
+                created={topic.created}
             />
         )}
     </ul>

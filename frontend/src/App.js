@@ -16,11 +16,13 @@ let logoutTimer;
 function App() {
 	const [token, setToken] = useState(false);
 	const [userId, setuser] = useState(false);
+	const [admin, setAdmin] = useState(false);
 	const [tokenExpirationDate, setTokenExpirationDate] = useState(false);
 
-	const login = useCallback((uid, token, expirationDate) => {
+	const login = useCallback((uid, token, admin, expirationDate) => {
 		setToken(token);
 		setuser(uid);
+		setAdmin(admin);
 		//current date + 1h
 		const tokenExpirationDate =
 			expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
@@ -30,14 +32,15 @@ function App() {
 			JSON.stringify({
 				userId: uid,
 				token,
+				admin: admin,
 				expiration: tokenExpirationDate.toISOString()
 			})
 		)
 	}, []);
-
 	const logout = useCallback(() => {
 		setToken(null);
 		setuser(null);
+		setAdmin(null);
 		setTokenExpirationDate(null);
 		localStorage.removeItem('userData');
 	}, []);
@@ -47,7 +50,7 @@ function App() {
 		if (storedData && storedData.token &&
 			new Date(storedData.expiration) > new Date() //if greater, the expiration is in the future
 		) {
-			login(storedData.userId, storedData.token, new Date(storedData.expiration));
+			login(storedData.userId, storedData.token, storedData.admin, new Date(storedData.expiration));
 		}
 	}, [login]);
 
@@ -62,7 +65,7 @@ function App() {
 
 	let routes;
 
-	if (token) {
+	if (token && admin === 1) {
 		routes = (
 			<Routes>
 				<Route path="/" element={<Topics />} />

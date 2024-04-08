@@ -56,14 +56,14 @@ const createPost = async (req, res) => {
   }
 };
 const editPost = async (req, res) => {
+  const postId = parseInt(req.params.id);
   const post = {
     body: req.body.body,
-    created_by: req.body.created_by,
-    likes: req.body.likes
+    updated: req.body.updated
   }
 
   try {
-    const response = await posts.editPost(post);
+    const response = await posts.editPost(post, postId);
     if (response) {
       res.status(201).send(post);
     }
@@ -85,22 +85,34 @@ const deletePostById = async (req, res) => {
   }
 };
 
-const updateLikes = async (req, res) => {
-  const post = {
-    likes: req.body.likes
+const addLike = async (req, res, next) => {
+  const postId = parseInt(req.params.id);
+  const { userId, vote } = req.body;
+
+  const post = await posts.findById(postId);
+  if (!post) {
+    const error = new Error(`Post with ID ${postId} not found`);
+    error.statusCode = 404;
+    return next(error);
   }
-  try {
-    const id = parseInt(req.params.id);
-    post.id = id;
-    posts.likes = post.likes + 1;
-    const response = await posts.updateLikesOnPost(post);
-    if (response) {
-      res.send(response[0]);
-    }
-  } catch (err) {
-    res.status(500).send(err);
+  const userLiked = post.wholiked && post.wholiked[userId];
+  if (userLiked) {
+    const error = new Error(`You have already liked this reply`);
+    error.statusCode = 400;
+    return next(error);
   }
-}
+  const like = await posts.addLikeById(vote, userId, postId);
+  if (!like) {
+    const error = new Error(`Something went wrong`);
+    error.statusCode = 404;
+    return next(error);
+  }
+
+  post.likes = post.likes + vote;
+  post.wholiked = userId;
+  res.json({ post });
+};
+
 
 const deletePostByTopicId = async (req, res) => {
   try {
@@ -121,7 +133,7 @@ module.exports = {
   getPostsById,
   createPost,
   deletePostById,
-  updateLikes,
+  addLike,
   editPost,
   deletePostByTopicId,
   getPostsByTopicId

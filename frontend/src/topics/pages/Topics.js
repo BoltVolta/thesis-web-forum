@@ -10,6 +10,7 @@ import CreateTopic from "../components/CreateTopic";
 const Topics = () => {
     const { isLoading, error, data } = useQuery({
         queryKey: 'topicsData',
+        refetchInterval: 250,
         queryFn: getTopics
     });
 

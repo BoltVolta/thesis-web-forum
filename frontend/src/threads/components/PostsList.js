@@ -22,6 +22,7 @@ const PostsList = props => {
                 created_by={post.created_by}
                 body={post.body}
                 likes={post.likes}
+                wholiked={post.wholiked}
                 created={post.created}
                 updated={post.updated}
             />

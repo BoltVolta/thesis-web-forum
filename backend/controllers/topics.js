@@ -45,7 +45,8 @@ const getTopicsByName = async (req, res) => {
 
 const createTopic = async (req, res) => {
     const topic = {
-        name: req.body.name
+        name: req.body.name,
+        created_by: req.body.created_by
     }
 
     try {

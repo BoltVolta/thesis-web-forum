@@ -2,12 +2,14 @@ import React, { useContext, useState, useRef, useEffect } from "react";
 import { useMutation } from 'react-query'
 import { AuthContext } from '../../shared/context/auth-context';
 import { editPost } from "../api/Threads";
-import { Input, Button, Modal, Box, Typography, Backdrop } from "@mui/material";
+import { Input, Button, Modal, Box, Typography, Backdrop, IconButton } from "@mui/material";
 import "./ThreadItem.css";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import UserInfoItem from "./UserInfoItem";
-import { create } from "@mui/material/styles/createTransitions";
+import { addTheLike } from "../api/Threads";
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 const modalBox = {
     position: 'absolute',
@@ -32,17 +34,16 @@ const ThreadItem = props => {
     const { id, name } = useParams();
 
     const bodyRef = useRef();
-    const likesRef = useRef();
-    const updatedRef = useRef();
-    const createdRef = useRef();
 
     const navigate = useNavigate();
 
     const [updatedDate, setUpdatedDate] = useState();
     const [createdDate, setCreatedDate] = useState();
+    const [createdBy, setCreatedBy] = useState();
 
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [isLiked, setLikedMode] = useState(true);
 
     const showConfirmationHandler = () => setShowConfirmationModal(true);
     const showEditHandler = () => setShowEditModal(true);
@@ -57,17 +58,44 @@ const ThreadItem = props => {
         onError: (error) => {
             console.log(error)
         }
-    })
+    });
 
     const postEditHandler = (event) => {
         event.preventDefault();
+        const newUpdate = new Date();
         editPostMutation.mutate({
+            id: props.id,
             body: bodyRef.current.value,
-            updated: updatedRef.current.value,
+            updated: newUpdate,
             token: auth.token
         })
         navigate(`/${id}/${name}`, { replace: true });
-    }
+    };
+
+    const likePostMutation = useMutation({
+        mutationFn: addTheLike
+    });
+
+    const addLikePostHandler = (event) => {
+        event.preventDefault();
+        setLikedMode((prevMode) => !prevMode);
+        likePostMutation.mutate({
+            id: props.id,
+            vote: 1,
+            userId: auth.userId,
+            token: auth.token
+        })
+    };
+    const removeLikePostHandler = (event) => {
+        event.preventDefault();
+        setLikedMode((prevMode) => !prevMode);
+        likePostMutation.mutate({
+            id: props.id,
+            vote: -1,
+            userId: auth.userId,
+            token: auth.token
+        })
+    };
 
     useEffect(() => {
         const date = new Date(props.created)
@@ -78,7 +106,8 @@ const ThreadItem = props => {
         if (props.created) {
             setCreatedDate(formattedDate);
         }
-    }, [])
+    }, [props.created])
+
 
     useEffect(() => {
         const date = new Date(props.updated)
@@ -87,11 +116,17 @@ const ThreadItem = props => {
             day: 'numeric', month: 'numeric', year: 'numeric'
         }).replace(/ /g, ' ');
         if (props.updated) {
-            setCreatedDate(formattedDate);
+            setUpdatedDate(formattedDate);
         }
-    }, [])
+    }, [props.updated])
 
-    if (props.created === props.updated) return (
+    useEffect(() => {
+        if (props.created_by > 0) {
+            setCreatedBy(props.created_by);
+        }
+    }, [props.created_by])
+
+    if (createdDate === updatedDate) return (
         <>
             <Modal
                 open={showConfirmationModal}
@@ -137,9 +172,9 @@ const ThreadItem = props => {
 
             <div>
                 <div className="message-inner">
-                    <UserInfoItem items={props.created_by} />
+                    <UserInfoItem items={createdBy} />
                     <div className="message-cell message-cell--main">
-                        <header className="message-arrtibution message-attribution--split"><span ref={createdRef}>{createdDate}</span></header>
+                        <header className="message-arrtibution message-attribution--split"><span>{createdDate}</span></header>
                         <div className="message-main js-quickEditTarget">
                             <div className="message-content">
                                 <div className="message-userContent lbContainer js-lbContainer">
@@ -153,8 +188,24 @@ const ThreadItem = props => {
                         <footer className="message-footer">
                             <div className="message-actionBar actionBar">
                                 <div className="actionBar-set actionBar-set--external">
-                                    <a className="actionBar-action actionBar-action--like"
-                                        data-xf-click="overlay" ref={likesRef}>Like</a>
+                                    <span className="actionBar-action" >{props.likes}</span>
+                                    {auth.token && (isLiked ? <>
+                                        < IconButton
+                                            data-testid="thumbUpIcon"
+                                            onClick={addLikePostHandler}
+                                            sx={{ marginTop: '-15px', marginBottom: '-10px' }}
+                                        >
+                                            <ThumbUpOffAltIcon />
+                                        </IconButton>
+                                    </> : <>
+                                        <IconButton
+                                            data-testid="thumbDownIcon"
+                                            onClick={removeLikePostHandler}
+                                            sx={{ marginTop: '-15px', marginBottom: '-10px' }}
+                                        >
+                                            <ThumbUpAltIcon />
+                                        </IconButton>
+                                    </>)}
                                     {auth.isLoggedIn && (
                                         <a onClick={showEditHandler} data-xf-click="overlay">Edit</a>
                                     )}
@@ -163,9 +214,9 @@ const ThreadItem = props => {
                                 </div>
                             </div>
                         </footer>
-                    </div>
-                </div>
-            </div>
+                    </div >
+                </div >
+            </div >
         </>
     );
 
@@ -189,7 +240,7 @@ const ThreadItem = props => {
                     <Typography id="modal-modal-description" color="common.black">
                         Once it's gone, it's gone!
                     </Typography>
-                    <Button delete onClick={showConfirmationHandler}>Delete</Button>
+                    <Button onClick={showConfirmationHandler}>Delete</Button>
                 </Box>
             </Modal >
             <Modal
@@ -209,7 +260,7 @@ const ThreadItem = props => {
                     </Typography>
                     <Input id="body" ref={bodyRef} type="text" label="body" sx={{ display: "grid", margin: "auto", position: "relative" }} />
 
-                    <Button sx={{ display: "grid", margin: "auto", position: "relative" }} edit onClick={postEditHandler}>Edit</Button>
+                    <Button sx={{ display: "grid", margin: "auto", position: "relative" }} onClick={postEditHandler}>Edit</Button>
                 </Box>
             </Modal >
 
@@ -217,7 +268,7 @@ const ThreadItem = props => {
                 <div className="message-inner">
                     <UserInfoItem items={props.created_by} />
                     <div className="message-cell message-cell--main">
-                        <header className="message-arrtibution message-attribution--split"><span ref={createdRef}>{createdDate}</span></header>
+                        <header className="message-arrtibution message-attribution--split"><span>{createdDate}</span></header>
                         <div className="message-main js-quickEditTarget">
                             <div className="message-content">
                                 <div className="message-userContent lbContainer js-lbContainer">
@@ -230,10 +281,26 @@ const ThreadItem = props => {
                         </div>
                         <footer className="message-footer">
                             <div className="message-actionBar actionBar">
-                                <div className="actionBar-set actionBar-set--internal">Last edited: <span ref={updatedRef}>{updatedDate}</span></div>
+                                <div className="actionBar-set actionBar-set--internal">Last edited: <span>{updatedDate}</span></div>
                                 <div className="actionBar-set actionBar-set--external">
-                                    <a className="actionBar-action actionBar-action--like"
-                                        data-xf-click="overlay" ref={likesRef}>Like</a>
+                                    <span className="actionBar-action" >{props.likes}</span>
+                                    {auth.token && (isLiked ? <>
+                                        < IconButton
+                                            data-testid="thumbUpIcon"
+                                            onClick={addLikePostHandler}
+                                            sx={{ marginTop: '-15px', marginBottom: '-10px' }}
+                                        >
+                                            <ThumbUpOffAltIcon />
+                                        </IconButton>
+                                    </> : <>
+                                        <IconButton
+                                            data-testid="thumbDownIcon"
+                                            onClick={removeLikePostHandler}
+                                            sx={{ marginTop: '-15px', marginBottom: '-7px' }}
+                                        >
+                                            <ThumbUpAltIcon />
+                                        </IconButton>
+                                    </>)}
                                     {auth.isLoggedIn && (
                                         <a onClick={showEditHandler} data-xf-click="overlay">Edit</a>
                                     )}

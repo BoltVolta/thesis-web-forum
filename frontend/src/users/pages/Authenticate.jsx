@@ -10,14 +10,12 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { IconButton } from '@mui/material';
 
-import Joi from "joi";
-
 import { loginUser, signUpUser } from '../api/users';
 import { AuthContext } from '../../shared/context/auth-context';
 
 import './Authenticate.css';
 
-const Authenticate = (props) => {
+const Authenticate = () => {
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -35,14 +33,6 @@ const Authenticate = (props) => {
 
   const auth = useContext(AuthContext);
 
-  const schema = Joi.object().keys({
-    name: Joi.string().min(3).max(20).required(),
-    email: Joi.string()
-      .min(4)
-      .email({ tlds: { allow: false } })
-      .required(),
-    password: Joi.string().min(8).required(),
-  });
   const backgroundColor = 'white';
 
   const switchModeHanlder = () => {
@@ -81,7 +71,7 @@ const Authenticate = (props) => {
       // Will execute only once, for the last mutation,
       // regardless which mutation resolves first
       console.log(data);
-      auth.login(data.id, data.token);
+      auth.login(data.id, data.token, data.admin);
       navigate("/");
     },
     onError: (error) => {
@@ -103,6 +93,7 @@ const Authenticate = (props) => {
         username: nameRef.current.value,
         email: emailRef.current.value,
         password: passwordRef.current.value,
+        admin: 0
       });
     }
   };

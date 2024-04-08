@@ -60,14 +60,14 @@ const posts = {
       });
     });
   }),
-  editPost: (post) => new Promise((resolve, reject) => {
+  editPost: (post, id) => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err) {
         return reject(err);
       }
 
       const updateQuery = 'UPDATE posts SET ? WHERE id LIKE ?;';
-      connection.query(updateQuery, [post, post.id], (err, result) => {
+      connection.query(updateQuery, [post, id], (err, result) => {
         connection.release();
         if (err) {
           reject(err);
@@ -107,13 +107,13 @@ const posts = {
       });
     });
   }),
-  updateLikesOnPost: (post) => new Promise((resolve, reject) => {
+  addLikeById: (vote, userId, id) => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err)
         return reject(err);
 
-      const addLikeQuery = 'UPDATE posts SET likes=? WHERE id=?';
-      connection.query(addLikeQuery, [post.likes, post.id], (err, result) => {
+      const addLikeQuery = "UPDATE posts SET likes = likes + ?, wholiked = json_set(COALESCE(wholiked, '{}'), ?, 'true') WHERE id=?";
+      connection.query(addLikeQuery, [vote, '$."' + [userId] + '"', id], (err, result) => {
         connection.release();
         if (err) {
           return reject(err);

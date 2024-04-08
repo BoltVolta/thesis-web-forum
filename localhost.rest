@@ -31,6 +31,7 @@ DELETE http://localhost:5000/api/topics/delete/3
 Content-Type: application/json
 Authorization: BEARER {{authToken}}
 
+
 ###
 POST http://localhost:5000/api/threads/create/
 Content-Type: application/json
@@ -44,12 +45,13 @@ Authorization: BEARER {{authToken}}
 
 }
 ###
-PATCH http://localhost:5000/api/threads/like/7
+PATCH http://localhost:5000/api/threads/like/1
 Content-Type: application/json
 Authorization: BEARER {{authToken}}
 
 {
-    "likes": "1000"
+    "userId": 3,
+    "vote": 1
 }
 ###
 DELETE http://localhost:5000/api/threads/del-by-topic/2
@@ -60,7 +62,7 @@ POST http://localhost:5000/api/users/signup
 Content-Type: application/json
 
 {
-    "username": "testuser", "email": "testuser@gmail.com", "password": "test123"
+    "username": "testuser2", "email": "testuser2@gmail.com", "password": "test123", "admin": true
 
 }
 
@@ -71,7 +73,6 @@ Content-Type: application/json
 
 {
     "email": "testuser@gmail.com", "password": "test123"
-
 }
 
 ###

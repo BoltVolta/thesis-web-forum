@@ -1,11 +1,10 @@
 const bcrypt = require('bcryptjs');
-const { v4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const users = require('../models/users');
 
 const signUpUser = async (req, res) => {
-    const { id, username, email, password } = req.body;
+    const { id, username, email, password, admin } = req.body;
     let hashedPassword;
     try {
         hashedPassword = await bcrypt.hash(password, 12);
@@ -16,7 +15,8 @@ const signUpUser = async (req, res) => {
         id,  //id: v4(),
         username,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        admin
     };
 
     try {
@@ -91,6 +91,7 @@ const loginUser = async (req, res) => {
         res.status(201).json({
             id: identifiedUser.id,
             email: identifiedUser.email,
+            admin: identifiedUser.admin,
             token
         })
     } catch (err) {

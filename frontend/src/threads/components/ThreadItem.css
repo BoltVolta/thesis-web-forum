@@ -214,18 +214,21 @@ article, aside, details, figcaption, figure, footer, header, main, menu, nav, se
 article, aside, details, figcaption, figure, footer, header, main, menu, nav, section {
   display: block;
 }
-.message-footer .message-actionBar {
-  margin-top: 1px;
-}
+
 .message-actionBar .actionBar-set {
   font-size: 0.813rem;
 }
 .actionBar-set.actionBar-set--external {
   float: right;
   margin-right: -3px;
+  margin-top: -5px;
+}
+span {
+  margin-right: -5px;
 }
 .actionBar-set.actionBar-set--internal {
   float: left;
+  width: 7%;
   margin-left: -3px;
 }
 .message-footer .message-actionBar .actionBar-set--external a {
@@ -249,9 +252,11 @@ article, aside, details, figcaption, figure, footer, header, main, menu, nav, se
   margin-left: 5px;
 }
 a {
+  margin-left: 5px;
   color: #2196F3;
   text-decoration: none;
 }
+
 a {
   background-color: transparent;
   -webkit-text-decoration-skip: objects;

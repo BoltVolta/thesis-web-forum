@@ -37,7 +37,7 @@ export const createPost = async ({ topic_id, body, created_by, likes, token }) =
     return await res.json();
 };
 
-export const editPost = async ({ id, token }) => {
+export const editPost = async ({ id, body, updated, token }) => {
     const res = await fetch(
         `http://localhost:5000/api/threads/${id}/edit`,
         {
@@ -48,7 +48,8 @@ export const editPost = async ({ id, token }) => {
                 Authorization: 'Bearer ' + token
             },
             body: JSON.stringify({
-                body
+                body,
+                updated
             })
         }
     );
@@ -81,5 +82,24 @@ export const deleteByTopicId = async ({ id, token }) => {
         }
     );
 
+    return await res.json();
+};
+
+export const addTheLike = async ({ id, vote, userId, token }) => {
+    const res = await fetch(
+        `http://localhost:5000/api/threads/like/${id}`,
+        {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                Authorization: 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                userId,
+                vote
+            })
+        }
+    );
     return await res.json();
 };

@@ -30,12 +30,15 @@ const CreateTopic = () => {
         mutationFn: createTopic
     })
     const topicSubmitHandler = (event) => {
+        console.log(auth.admin);
         setShowCreateModal(false);
         event.preventDefault();
         createTopicMutation.mutate({
             name: topicRef.current.value,
+            created_by: auth.userId,
             token: auth.token
         })
+
         navigate('/');
     }
     return (

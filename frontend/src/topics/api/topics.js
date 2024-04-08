@@ -1,5 +1,4 @@
 export const getTopics = async () => {
-    console.log("get topics");
     const res = await fetch(
         `http://localhost:5000/api/topics/`
     );
@@ -27,7 +26,7 @@ export const getTopicsByName = async ({ queryKey }) => {
     return await res.json();
 };
 
-export const createTopic = async ({ name, token }) => {
+export const createTopic = async ({ name, created_by, token }) => {
     const res = await fetch(
         `http://localhost:5000/api/topics/create`,
         {
@@ -38,7 +37,8 @@ export const createTopic = async ({ name, token }) => {
                 Authorization: 'Bearer ' + token
             },
             body: JSON.stringify({
-                name
+                name,
+                created_by
             })
         }
     );
