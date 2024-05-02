@@ -45,6 +45,21 @@ const posts = {
       });
     });
   }),
+  findAllWithTopicId: (id) => new Promise((resolve, reject) => {
+    pool.getConnection((err, connection) => {
+      if (err)
+        return reject(err);
+
+      const selectQuery = 'SELECT COUNT(*) AS count FROM posts WHERE topic_id=?';
+      connection.query(selectQuery, id, (err, result) => {
+        connection.release();
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
+    });
+  }),
   save: (post) => new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err)

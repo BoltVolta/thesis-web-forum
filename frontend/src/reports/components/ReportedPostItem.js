@@ -1,15 +1,14 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { useMutation } from 'react-query'
 import { AuthContext } from '../../shared/context/auth-context';
-import { editPost, addTheLike } from "../api/Threads";
+import { editPost, addTheLike } from "../../threads/api/Threads";
 import { Input, Button, Modal, Box, Typography, Backdrop, IconButton, TextField } from "@mui/material";
-import "./ThreadItem.css";
+import "../../threads/components/ThreadItem.css";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import UserInfoItem from "./UserInfoItem";
+import UserInfoItem from "../../threads/components/UserInfoItem";
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import { createReport } from '../../reports/api/reports';
 
 const modalBox = {
     position: 'absolute',
@@ -31,10 +30,9 @@ const center = {
 const ThreadItem = props => {
     const auth = useContext(AuthContext);
 
-    const { id, name } = useParams();
+    const { id } = useParams();
 
     const bodyRef = useRef();
-    const reasonRef = useRef();
 
     const navigate = useNavigate();
 
@@ -45,16 +43,12 @@ const ThreadItem = props => {
 
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [showReportModal, setShowReportModal] = useState(false);
     const [isLiked, setLikedMode] = useState(true);
 
     const showConfirmationHandler = () => setShowConfirmationModal(true);
     const showEditHandler = () => setShowEditModal(true);
-    const showReportHandler = () => setShowReportModal(true);
     const cancelConfirmationHandler = () => setShowConfirmationModal(false);
     const cancelEditHandler = () => setShowEditModal(false);
-    const cancelReportHandler = () => setShowReportModal(false);
-
 
     const editPostMutation = useMutation({
         mutationFn: editPost,
@@ -75,30 +69,8 @@ const ThreadItem = props => {
             updated: newUpdate,
             token: auth.token
         })
-        navigate(`/${id}/${name}`, { replace: true });
+        navigate(`/admin/${id}`, { replace: true });
     };
-
-    const reportPostMutation = useMutation({
-        mutationFn: createReport,
-        onSuccess: (data) => {
-            console.log(data);
-        },
-        onError: (error) => {
-            console.log(error)
-        }
-    });
-
-    const reportPostHandler = (event) => {
-        event.preventDefault();
-        editPostMutation.mutate({
-            post_id: props.id,
-            reason: reasonRef.current.value,
-            user_id: auth.userId,
-            token: auth.token
-        })
-        navigate(`/${id}/${name}`, { replace: true });
-    };
-
 
     const likePostMutation = useMutation({
         mutationFn: addTheLike
@@ -191,7 +163,7 @@ const ThreadItem = props => {
             >
                 <Box sx={modalBox}>
                     <Typography id="modal-modal-title" variant="h6" component="h2" color="common.black">
-                        Edit Your Post
+                        Edit The Post
                     </Typography>
                     <TextField
                         id="body"
@@ -207,28 +179,6 @@ const ThreadItem = props => {
                     <Button sx={{ display: "grid", margin: "auto", position: "relative" }} onClick={postEditHandler}>Edit</Button>
                 </Box>
             </Modal >
-
-            <Modal
-                open={showReportModal}
-                onClose={cancelReportHandler}
-                closeAfterTransition
-                slots={{ backdrop: Backdrop }}
-                slotProps={{
-                    backdrop: {
-                        timeout: 500,
-                    },
-                }}
-            >
-                <Box sx={modalBox}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2" color="common.black">
-                        Submit report
-                    </Typography>
-                    <Input id="reason" ref={reasonRef} type="text" label="body" sx={{ display: "grid", margin: "auto", position: "relative" }} />
-
-                    <Button sx={{ display: "grid", margin: "auto", position: "relative" }} onClick={reportPostHandler}>Submit</Button>
-                </Box>
-            </Modal >
-
             <div>
                 <div className="message-inner">
                     <UserInfoItem items={createdBy} />
@@ -265,11 +215,9 @@ const ThreadItem = props => {
                                             <ThumbUpAltIcon />
                                         </IconButton>
                                     </>)}
-                                    {auth.isLoggedIn && (
+                                    {(auth.admin === 1) && (
                                         <a onClick={showEditHandler} data-xf-click="overlay">Edit</a>
                                     )}
-                                    <a href="/posts/report" className="actionBar-action actionBar-action--report"
-                                        data-xf-click="overlay">Report</a>
                                 </div>
                             </div>
                         </footer>
@@ -315,32 +263,20 @@ const ThreadItem = props => {
             >
                 <Box sx={modalBox}>
                     <Typography id="modal-modal-title" variant="h6" component="h2" color="common.black">
-                        Edit Your Post
+                        Edit The Post
                     </Typography>
-                    <Input id="body" ref={bodyRef} type="text" label="body" sx={{ display: "grid", margin: "auto", position: "relative" }} />
+                    <TextField
+                        id="body"
+                        multiline={true}
+                        rows={1000}
+                        variant="outlined"
+                        inputProps={{ maxLength: 2000 }}
+                        onChange={(e) => { setBody(e.target.value) }}
+                        value={body}
+                        inputRef={bodyRef}
+                        type="text" label="body" sx={{ display: "grid", margin: "auto", position: "relative" }} />
 
                     <Button sx={{ display: "grid", margin: "auto", position: "relative" }} onClick={postEditHandler}>Edit</Button>
-                </Box>
-            </Modal >
-
-            <Modal
-                open={showReportModal}
-                onClose={cancelReportHandler}
-                closeAfterTransition
-                slots={{ backdrop: Backdrop }}
-                slotProps={{
-                    backdrop: {
-                        timeout: 500,
-                    },
-                }}
-            >
-                <Box sx={modalBox}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2" color="common.black">
-                        Submit report
-                    </Typography>
-                    <Input id="reason" ref={reasonRef} type="text" label="body" sx={{ display: "grid", margin: "auto", position: "relative" }} />
-
-                    <Button sx={{ display: "grid", margin: "auto", position: "relative" }} onClick={reportPostHandler}>Submit</Button>
                 </Box>
             </Modal >
             <div>
@@ -380,11 +316,9 @@ const ThreadItem = props => {
                                             <ThumbUpAltIcon />
                                         </IconButton>
                                     </>)}
-                                    {auth.isLoggedIn && (
+                                    {(auth.admin === 1) && (
                                         <a onClick={showEditHandler} data-xf-click="overlay">Edit</a>
                                     )}
-                                    <a href="/posts/report" className="actionBar-action actionBar-action--report"
-                                        data-xf-click="overlay" onClick={showReportHandler}>Report</a>
                                 </div>
                             </div>
                         </footer>

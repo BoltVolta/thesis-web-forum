@@ -77,7 +77,7 @@ const CommentBox = () => {
 					multiline={true}
 					rows={10}
 					variant="outlined"
-					inputProps={{ maxLength: 2000 }}
+					inputProps={{ maxLength: 20000 }}
 					onChange={(e) => { setText(e.target.value) }}
 					value={text}
 					inputRef={textRef}

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, Button, Modal, Box, Typography, Backdrop, Input } from "@mui/material";
 import { AuthContext } from '../../shared/context/auth-context';
 import { deleteTopic, createTopic } from "../api/topics";
+import { getPostCountByTopicId } from "../../threads/api/Threads";
 import { getUserById } from "../../users/api/users";
 import './TopicItem.css';
 
@@ -39,8 +40,26 @@ const TopicItem = props => {
     const { isLoading, error, data, isSuccess } = useQuery({
         queryKey: ['userId', { userId: props.created_by }],
         queryFn: getUserById,
+        enabled: !!props.created_by,
         staleTime: 5000
     });
+
+    const [replies, setReplies] = useState();
+
+    const { isLoading: loading, error: err, data: comments, isSuccess: success } = useQuery({
+        queryKey: ['countByTopicId', { topic_id: props.id }],
+        queryFn: getPostCountByTopicId
+    });
+
+    useEffect(() => {
+        if (comments) {
+            let replies = comments.map(function (element) {
+                if (typeof element.count !== "undefined")
+                    return `${element.count}`;
+            });
+            setReplies(replies);
+        }
+    }, [comments]);
 
     const deleteTopicMutation = useMutation({
         mutationFn: deleteTopic,
@@ -63,6 +82,7 @@ const TopicItem = props => {
     }
 
     if (error) return "An error has occurred: " + error.message;
+    if (err) return "An error has occurred: " + err.message;
 
     useEffect(() => {
         const date = new Date(props.created)
@@ -78,15 +98,15 @@ const TopicItem = props => {
 
     useEffect(() => {
         if (data) {
-            const dataCopy = [...data];
-            for (var i = 0, iLen = dataCopy.length; i < iLen; i++) {
-                if (typeof dataCopy[i].username != "undefined")
-                    setUsername(dataCopy[i].username);
-            }
+            let usernames = data.map(function (element) {
+                if (typeof element.username !== "undefined")
+                    return `${element.username}`;
+            });
+            setUsername(usernames);
         }
-    }, [data, username]);
+    }, [data])
 
-    if (isLoading || !username) {
+    if (isLoading || loading) {
         return (
             <>
                 <Modal
@@ -123,7 +143,7 @@ const TopicItem = props => {
                                         <a data-xf-click="overlay" onClick={() => { navigate(`/${props.id}/${linkName}`) }} >{props.name}</a>
                                     </h3>
                                     <div className="node-description node-description--tooltip js-nodeDescTooltip">
-                                        <span id="datetime"> Created: loading... &nbsp; Created By: loading... </span>
+                                        <span id="datetime"> Created By: loading... &nbsp; Replies: loading... &nbsp; Created: loading... </span>
                                     </div>
                                 </div>
                                 <div className="topic-item_actions">
@@ -179,7 +199,7 @@ const TopicItem = props => {
                                         <a data-xf-click="overlay" onClick={() => { navigate(`/${props.id}/${linkName}`) }} >{props.name}</a>
                                     </h3>
                                     <div className="node-description node-description--tooltip js-nodeDescTooltip">
-                                        <span id="datetime"> Created: {createdDate} &nbsp; Created By: {data[0].username} </span>
+                                        <span id="datetime"> Created By: {username}  &nbsp; Replies: {replies} &nbsp; Created: {createdDate}</span>
                                     </div>
                                 </div>
                                 <div className="topic-item_actions">
@@ -230,7 +250,7 @@ const TopicItem = props => {
                                         <a data-xf-click="overlay" onClick={() => { navigate(`/${props.id}/${linkName}`) }} >{props.name}</a>
                                     </h3>
                                     <div className="node-description node-description--tooltip js-nodeDescTooltip">
-                                        <span id="datetime"> Created: {createdDate} &nbsp; Created By: {username} </span>
+                                        <span id="datetime"> Created By: {username}  &nbsp; Replies: {replies} &nbsp; Created: {createdDate}</span>
                                     </div>
                                 </div>
                                 <div className="topic-item_actions">

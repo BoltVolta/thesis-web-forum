@@ -15,6 +15,15 @@ export const getPostById = async ({ queryKey }) => {
     return await res.json();
 };
 
+export const getPostCountByTopicId = async ({ queryKey }) => {
+    const posts = queryKey[1];
+    const res = await fetch(
+        `http://localhost:5000/api/threads/countByTopic/${posts.topic_id}`,
+    );
+    //var log = console.log(await res.json());
+    return await res.json();
+};
+
 export const createPost = async ({ topic_id, body, created_by, likes, token }) => {
     const res = await fetch(
         `http://localhost:5000/api/threads/create`,

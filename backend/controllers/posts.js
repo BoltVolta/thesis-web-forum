@@ -35,6 +35,17 @@ const getPostsByTopicId = async (req, res) => {
     res.status(500).send(err);
   }
 };
+const getPostCount = async (req, res) => {
+  try {
+    const topic_id = parseInt(req.params.id);
+    const response = await posts.findAllWithTopicId(topic_id);
+    if (response) {
+      res.send(response);
+    }
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
 
 const createPost = async (req, res) => {
   const post = {
@@ -136,5 +147,6 @@ module.exports = {
   addLike,
   editPost,
   deletePostByTopicId,
-  getPostsByTopicId
+  getPostsByTopicId,
+  getPostCount
 };

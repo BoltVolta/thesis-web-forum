@@ -3,10 +3,12 @@ const router = express.Router();
 
 const verifyToken = require('../middleware/verifyToken');
 
-const { getPosts, getPostsById, createPost, deletePostById, addLike, editPost, deletePostByTopicId, getPostsByTopicId } = require('../controllers/posts');
+const { getPosts, getPostsById, createPost, deletePostById, addLike, editPost, deletePostByTopicId, getPostsByTopicId, getPostCount } = require('../controllers/posts');
+
 router.get('/', getPosts);
 router.get('/:id', getPostsById);
 router.get('/byTopic/:id', getPostsByTopicId);
+router.get('/countByTopic/:id', getPostCount);
 
 router.use(verifyToken);
 

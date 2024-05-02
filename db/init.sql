@@ -29,6 +29,15 @@ CREATE TABLE IF NOT EXISTS `topics` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `reports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_id` int(11) NOT NULL,
+  `reason` varchar(45) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 INSERT INTO `users` (`username`, `email`, `password`, `admin`) VALUES ('test', 'test@gmail.com', 'testpass', 0);
 INSERT INTO `users` (`username`, `email`, `password`, `admin`) VALUES ('test2', 'test2@gmail.com', 'testpass2', 0);
 INSERT INTO `topics` (`name`, `created_by`) VALUES ('test topic', 1);

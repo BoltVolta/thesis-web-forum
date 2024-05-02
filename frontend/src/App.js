@@ -8,6 +8,8 @@ import NavComponent from './shared/components/navigation/NavComponent';
 import Topics from './topics/pages/Topics';
 import './App.css';
 import SearchTopics from './topics/components/SearchTopics';
+import Reports from './reports/pages/Reports';
+import ReportedPosts from './reports/pages/ReportedPosts';
 
 const queryClient = new QueryClient();
 
@@ -64,6 +66,10 @@ function App() {
 	}, [token, logout, tokenExpirationDate]);
 
 	let routes;
+	/*
+				<Route path="/admin" element={<Reports />} />
+				<Route path="/admin/:id/" element={<ReportedPosts />} />
+	*/
 
 	if (token && admin === 1) {
 		routes = (

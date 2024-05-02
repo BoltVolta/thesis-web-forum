@@ -1,10 +1,11 @@
 import React, { useState, useRef, useContext } from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { Button, Modal, Box, Typography, Backdrop, Input } from "@mui/material";
+import { Button, Modal, Box, Typography, Backdrop, Input, colors } from "@mui/material";
 import { AuthContext } from '../../shared/context/auth-context';
 import { createTopic } from "../api/topics";
-//import TablePagination from "@mui/material/TablePagination/";
+import CreateIcon from '@mui/icons-material/Create';
+
 const modalBox = {
     position: 'absolute',
     top: '50%',
@@ -16,6 +17,7 @@ const modalBox = {
     boxShadow: 24,
     p: 4
 };
+
 const CreateTopic = () => {
     const auth = useContext(AuthContext);
     const topicRef = useRef();
@@ -63,9 +65,7 @@ const CreateTopic = () => {
                 </Box>
             </Modal >
             {auth.isLoggedIn && (
-                <div className="button__create">
-                    <Button sx={{ width: "90%", backgroundColor: "#fff" }} onClick={showCreateHandler}>Create</Button>
-                </div>
+                <Button sx={{ width: "10%", backgroundColor: "#fff", float: "right", marginRight: "5.3%" }} onClick={showCreateHandler}><CreateIcon />New Topic</Button>
             )}
         </>
     )

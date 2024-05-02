@@ -1,8 +1,13 @@
 GET http://localhost:5000/api/topics
+
 ###
 GET http://localhost:5000/api/users
+
 ###
 GET http://localhost:5000/api/threads
+
+###
+GET http://localhost:5000/api/threads/countByTopic/1
 
 ###
 GET http://localhost:5000/api/topics

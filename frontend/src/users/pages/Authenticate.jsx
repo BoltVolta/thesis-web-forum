@@ -56,12 +56,13 @@ const Authenticate = () => {
     onSuccess: (data) => {
       // Will execute only once, for the last mutation,
       // regardless which mutation resolves first
-      console.log(data);
-      navigate("/auth");
+      auth.login(data.id, data.token, data.admin);
+      navigate("/");
+
     },
     onError: (error) => {
-      console.log(error);
       setInputError({ signup: "Email exists" });
+      console.log(error);
     },
   });
 
@@ -70,7 +71,6 @@ const Authenticate = () => {
     onSuccess: (data) => {
       // Will execute only once, for the last mutation,
       // regardless which mutation resolves first
-      console.log(data);
       auth.login(data.id, data.token, data.admin);
       navigate("/");
     },
@@ -114,7 +114,7 @@ const Authenticate = () => {
           <Input
             id="password"
             inputRef={passwordRef}
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -123,7 +123,7 @@ const Authenticate = () => {
                   onMouseDown={handleMouseDownPassword}
                   edge="end"
                 >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
             }

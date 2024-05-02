@@ -80,6 +80,7 @@ function NavComponent() {
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+
                     <Typography
                         variant="h6"
                         noWrap
@@ -97,7 +98,6 @@ function NavComponent() {
                     >
                         Forum Thesis
                     </Typography>
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
@@ -132,38 +132,13 @@ function NavComponent() {
                                     textAlign="center"
                                     component={NavLink}
                                     to="/">
-                                    TOPICS
+                                    Forum Thesis
                                 </Typography>
                             </MenuItem>
 
                         </Menu>
                     </Box>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Button
-                        component={NavLink}
-                        to="/"
-                        color="inherit"
-                        onClick={() => { navigate('/') }}
-                    >
-                        <Typography
-                            variant="h5"
-                            noWrap
-                            component="a"
-                            href="#app-bar-with-responsive-menu"
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'flex', md: 'none' },
-                                flexGrow: 1,
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                        >
-                            Forum Thesis
-                        </Typography>
-                    </Button>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         <Button
                             key={1}
